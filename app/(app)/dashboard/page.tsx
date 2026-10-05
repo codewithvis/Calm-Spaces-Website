@@ -1,5 +1,6 @@
-import { Activity, AlertTriangle, BookHeart, BrainCircuit, CalendarClock, MessageSquareText, Sparkles } from "lucide-react";
-import { AppShell, MetricCard } from "@/components/site-shell";
+import Link from "next/link";
+import { ArrowRight, BookOpenText, CalendarDays, Leaf, MessageSquareText, ShieldCheck, Sparkles, Wind } from "lucide-react";
+import { AppShell } from "@/components/site-shell";
 
 const moodData = [
   { day: "Mon", value: 6 },
@@ -11,52 +12,32 @@ const moodData = [
   { day: "Sun", value: 8 },
 ];
 
-function MoodChart() {
+function MoodPattern() {
   const width = 620;
-  const height = 220;
-  const padding = 26;
-  const max = 10;
-  const min = 0;
-
+  const height = 190;
+  const padding = 24;
   const points = moodData.map((point, index) => {
     const x = padding + (index * (width - padding * 2)) / (moodData.length - 1);
-    const y = height - padding - ((point.value - min) / (max - min)) * (height - padding * 2);
+    const y = height - padding - (point.value / 10) * (height - padding * 2);
     return `${x},${y}`;
   });
 
-  const gridLines = Array.from({ length: 5 }, (_, index) => {
-    const y = padding + (index * (height - padding * 2)) / 4;
-    return { y };
-  });
-
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="h-64 w-full" role="img" aria-label="Mood chart over the last seven days">
-      {gridLines.map((line) => (
-        <line key={line.y} x1={padding} x2={width - padding} y1={line.y} y2={line.y} stroke="#e5e7eb" strokeDasharray="4 4" />
-      ))}
-
-      <polyline
-        fill="none"
-        stroke="#6547a6"
-        strokeWidth="3"
-        points={points.join(" ")}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {moodData.map((point, index) => {
-        const x = padding + (index * (width - padding * 2)) / (moodData.length - 1);
-        const y = height - padding - ((point.value - min) / (max - min)) * (height - padding * 2);
-        return (
-          <g key={point.day}>
-            <circle cx={x} cy={y} r="5" fill="#6547a6" />
-            <text x={x} y={height - 8} textAnchor="middle" fontSize="11" fill="#6b7280">
-              {point.day}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
+    <div>
+      <svg viewBox={`0 0 ${width} ${height}`} className="h-52 w-full" role="img" aria-label="A gentle summary of mood check-ins over the last seven days">
+        {[0, 1, 2, 3].map((line) => {
+          const y = padding + (line * (height - padding * 2)) / 3;
+          return <line key={line} x1={padding} x2={width - padding} y1={y} y2={y} stroke="var(--color-border)" strokeDasharray="4 5" />;
+        })}
+        <polyline fill="none" stroke="var(--color-sage-strong)" strokeWidth="3" points={points.join(" ")} strokeLinecap="round" strokeLinejoin="round" />
+        {moodData.map((point, index) => {
+          const x = padding + (index * (width - padding * 2)) / (moodData.length - 1);
+          const y = height - padding - (point.value / 10) * (height - padding * 2);
+          return <g key={point.day}><circle cx={x} cy={y} r="5" fill="var(--color-sage-strong)" /><text x={x} y={height - 5} textAnchor="middle" fontSize="11" fill="var(--color-muted)">{point.day}</text></g>;
+        })}
+      </svg>
+      <p className="text-sm leading-6 text-[var(--color-muted)]">You&apos;ve felt a little more settled on the days you made time to pause.</p>
+    </div>
   );
 }
 
@@ -64,73 +45,46 @@ export default function DashboardPage() {
   return (
     <AppShell role="Student">
       <div className="space-y-8">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Current mood" value="8/10" helper="Feeling steady and supported" />
-          <MetricCard label="Journal entries" value="14" helper="This month" />
-          <MetricCard label="Upcoming session" value="Thu 4:00 PM" helper="Expert check-in" />
-          <MetricCard label="Support score" value="87%" helper="Consistency this week" />
-        </div>
+        <section className="border-b border-[var(--color-border)] pb-8">
+          <p className="text-sm text-[var(--color-muted)]">Good evening, Vishal.</p>
+          <h2 className="mt-2 max-w-2xl text-4xl leading-tight text-[var(--color-text)] sm:text-5xl">How are you feeling today?</h2>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {["Calm", "Okay", "Low", "Anxious", "Hopeful"].map((mood) => <Link href="/mood" key={mood} className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] transition hover:border-[var(--color-sage-strong)]">{mood}</Link>)}
+          </div>
+        </section>
 
-        <div className="grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
-          <div className="rounded-3xl border border-[var(--color-border)] bg-white p-6 shadow-sm">
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[var(--color-muted)]">Wellbeing overview</p>
-                <h2 className="text-2xl font-semibold text-[var(--color-text)]">Mood trend</h2>
-              </div>
-              <div className="rounded-full bg-[var(--color-surface)] px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--color-primary)]">Last 7 days</div>
+        <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[0_8px_24px_rgba(32,51,43,0.04)]">
+            <div className="flex items-start justify-between gap-4">
+              <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-sage-strong)]">Your week</p><h3 className="mt-2 text-2xl text-[var(--color-text)]">A small thing we noticed</h3></div>
+              <Leaf className="h-6 w-6 text-[var(--color-sage-strong)]" />
             </div>
-            <MoodChart />
+            <div className="mt-6"><MoodPattern /></div>
+            <Link href="/mood" className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-sage-strong)]">View your patterns <ArrowRight className="h-4 w-4" /></Link>
           </div>
 
-          <div className="space-y-4">
-            <div className="rounded-3xl border border-[var(--color-border)] bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-[var(--color-primary)]" />
-                <h3 className="text-lg font-semibold">Quick actions</h3>
-              </div>
-              <div className="mt-4 space-y-3 text-sm text-[var(--color-muted)]">
-                <div className="flex items-center justify-between rounded-2xl bg-[var(--color-surface)] p-3"><span>Check in</span><Activity className="h-4 w-4" /></div>
-                <div className="flex items-center justify-between rounded-2xl bg-[var(--color-surface)] p-3"><span>Journal</span><BookHeart className="h-4 w-4" /></div>
-                <div className="flex items-center justify-between rounded-2xl bg-[var(--color-surface)] p-3"><span>Breathing</span><BrainCircuit className="h-4 w-4" /></div>
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-              <div className="flex items-center gap-3">
-                <AlertTriangle className="h-5 w-5 text-[var(--color-primary)]" />
-                <h3 className="text-lg font-semibold">Safety</h3>
-              </div>
-              <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">If you need immediate crisis support, use the safety resources in one step.</p>
-            </div>
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-sand)]/55 p-6">
+            <Sparkles className="h-6 w-6 text-[var(--color-sage-strong)]" />
+            <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-sage-strong)]">Something for you</p>
+            <h3 className="mt-2 text-2xl leading-tight text-[var(--color-text)]">Try a three-minute breathing reset.</h3>
+            <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">A short pause can be enough to make the next moment feel a little more manageable.</p>
+            <Link href="/wellness" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--color-sage-strong)] px-5 py-3 text-sm font-medium text-white">Take a breath <Wind className="h-4 w-4" /></Link>
           </div>
-        </div>
+        </section>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="rounded-3xl border border-[var(--color-border)] bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <CalendarClock className="h-5 w-5 text-[var(--color-primary)]" />
-              <h3 className="text-lg font-semibold">Upcoming</h3>
-            </div>
-            <p className="mt-4 text-[var(--color-muted)]">No upcoming appointments. Book a consultation or start a peer support conversation.</p>
+        <section>
+          <div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-sage-strong)]">Keep going gently</p><h3 className="mt-2 text-3xl text-[var(--color-text)]">Continue where you left off</h3></div><Link href="/resources" className="hidden text-sm font-medium text-[var(--color-sage-strong)] sm:inline-flex">Explore more <ArrowRight className="ml-2 h-4 w-4" /></Link></div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Link href="/journal" className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[0_8px_24px_rgba(32,51,43,0.04)]"><BookOpenText className="h-5 w-5 text-[var(--color-sage-strong)]" /><h4 className="mt-7 text-xl text-[var(--color-text)]">Finish your reflection</h4><p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">You left a thought unfinished yesterday.</p><ArrowRight className="mt-5 h-4 w-4 text-[var(--color-muted)] transition-transform group-hover:translate-x-1" /></Link>
+            <Link href="/resources" className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[0_8px_24px_rgba(32,51,43,0.04)]"><Sparkles className="h-5 w-5 text-[var(--color-sage-strong)]" /><h4 className="mt-7 text-xl text-[var(--color-text)]">Read something kind</h4><p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">A short guide for when everything feels too much.</p><ArrowRight className="mt-5 h-4 w-4 text-[var(--color-muted)] transition-transform group-hover:translate-x-1" /></Link>
+            <Link href="/buddy-connect" className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[0_8px_24px_rgba(32,51,43,0.04)]"><MessageSquareText className="h-5 w-5 text-[var(--color-sage-strong)]" /><h4 className="mt-7 text-xl text-[var(--color-text)]">Talk to someone</h4><p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">Peer listeners are here when you&apos;d like company.</p><ArrowRight className="mt-5 h-4 w-4 text-[var(--color-muted)] transition-transform group-hover:translate-x-1" /></Link>
           </div>
+        </section>
 
-          <div className="rounded-3xl border border-[var(--color-border)] bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <MessageSquareText className="h-5 w-5 text-[var(--color-primary)]" />
-              <h3 className="text-lg font-semibold">AI assistant</h3>
-            </div>
-            <p className="mt-4 text-[var(--color-muted)]">A supportive prompt can help you reflect on your day and suggest gentle next steps.</p>
-          </div>
-
-          <div className="rounded-3xl border border-[var(--color-border)] bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <BookHeart className="h-5 w-5 text-[var(--color-primary)]" />
-              <h3 className="text-lg font-semibold">Recommended resources</h3>
-            </div>
-            <p className="mt-4 text-[var(--color-muted)]">Guided breathing and a mood journaling prompt are good fits for this week.</p>
-          </div>
-        </div>
+        <section className="grid gap-4 border-t border-[var(--color-border)] pt-8 md:grid-cols-2">
+          <div className="flex gap-4 rounded-2xl bg-[var(--color-surface-muted)] p-5"><CalendarDays className="h-5 w-5 shrink-0 text-[var(--color-sage-strong)]" /><div><h3 className="text-lg text-[var(--color-text)]">Your upcoming session</h3><p className="mt-1 text-sm text-[var(--color-muted)]">Thursday at 4:00 PM · Expert check-in</p><Link href="/appointments" className="mt-3 inline-flex text-sm font-medium text-[var(--color-sage-strong)]">View appointment <ArrowRight className="ml-2 h-4 w-4" /></Link></div></div>
+          <div className="flex gap-4 rounded-2xl bg-[var(--color-surface-muted)] p-5"><ShieldCheck className="h-5 w-5 shrink-0 text-[var(--color-sage-strong)]" /><div><h3 className="text-lg text-[var(--color-text)]">Your journal is private.</h3><p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">Only you can access your journal entries within your protected space.</p></div></div>
+        </section>
       </div>
     </AppShell>
   );

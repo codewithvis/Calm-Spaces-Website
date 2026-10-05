@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
+import { institutionalIdentity } from "@/content/institutional";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const uiFont = DM_Sans({
+  variable: "--font-ui",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const displayFont = Fraunces({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Calm Spaces | Mood tracking, peer support, and mental wellness",
-  description: "Calm Spaces is a privacy-conscious wellbeing platform for mood tracking, journaling, expert support, and peer care.",
+  title: "C.A.L.M Spaces | SGT University · CEAPS",
+  description: institutionalIdentity.oneLineBio,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${uiFont.variable} ${displayFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--color-bg)] text-[var(--color-text)]">{children}</body>
     </html>

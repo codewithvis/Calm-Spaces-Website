@@ -1,45 +1,10 @@
-import { PageContainer, SectionHeading, SiteHeader, Footer } from "@/components/site-shell";
+import Link from "next/link";
+import { ArrowRight, MapPin, ShieldCheck } from "lucide-react";
+import { Footer, PageContainer, SectionHeading, SiteHeader } from "@/components/site-shell";
+import { institutionalIdentity, institutionalTeam } from "@/content/institutional";
 
 export default function AboutPage() {
-  return (
-    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-      <SiteHeader />
-      <PageContainer>
-        <SectionHeading
-          eyebrow="About"
-          title="A calm, trusted wellbeing platform built for real support"
-          description="Calm Spaces exists to make it easier for students and campus communities to notice patterns, access support, and build practical habits around emotional care."
-        />
+  const leadTeam = institutionalTeam.filter((member) => member.isCalmSpacesTeam);
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <article className="rounded-3xl border border-[var(--color-border)] bg-white p-8">
-            <h3 className="text-2xl font-semibold">Mission</h3>
-            <p className="mt-4 text-base leading-7 text-[var(--color-muted)]">To create a safe digital home where people can check in with themselves, access supportive resources, and connect with the right kind of help without feeling overwhelmed.</p>
-          </article>
-          <article className="rounded-3xl border border-[var(--color-border)] bg-white p-8">
-            <h3 className="text-2xl font-semibold">Vision</h3>
-            <p className="mt-4 text-base leading-7 text-[var(--color-muted)]">To bring together awareness, learning, movement, and community support in one calm and privacy-conscious platform that feels humane, professional, and easy to rely on.</p>
-          </article>
-        </div>
-
-        <div className="mt-10 rounded-3xl border border-[var(--color-border)] bg-white p-8">
-          <h3 className="text-2xl font-semibold">The CALM philosophy</h3>
-          <div className="mt-6 grid gap-4 md:grid-cols-4">
-            {[
-              { title: "Cultivating", detail: "Consistent habits that make support easier to access." },
-              { title: "Awareness", detail: "Noticing patterns in mood, energy, and wellbeing." },
-              { title: "Learning", detail: "Using resources and reflection to build resilience." },
-              { title: "Movement", detail: "Taking small actions that help people feel more grounded." },
-            ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-                <p className="text-lg font-semibold">{item.title}</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">{item.detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-      <Footer />
-    </div>
-  );
+  return <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]"><SiteHeader /><PageContainer><div className="max-w-3xl"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-sage-strong)]">{institutionalIdentity.name} · CEAPS · SGT University</p><h1 className="mt-5 text-5xl leading-tight text-[var(--color-text)]">A space for your well-being.</h1><p className="mt-6 text-lg leading-8 text-[var(--color-muted)]">University life is more than lectures, assignments and examinations. It is friendships, transitions, expectations, uncertainty, new experiences, pressure, growth and everything in between.</p></div><div className="mt-12 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]"><div className="space-y-6 text-base leading-8 text-[var(--color-muted)]"><p>C.A.L.M Spaces was created to make well-being a natural part of that journey.</p><p>Operating under CEAPS at SGT University, C.A.L.M Spaces brings together professional support, peer connection, reflective practices, workshops and wellness experiences in one welcoming ecosystem.</p><p>You don&apos;t have to wait until things feel overwhelming. Sometimes, you simply need a space to pause.</p></div><div className="rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-primary)] p-6"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-sage-strong)]">Our official framework</p><h2 className="mt-4 text-2xl text-[var(--color-text)]">{institutionalIdentity.calmPhrase}</h2><p className="mt-4 text-sm leading-6 text-[var(--color-muted)]">This wording is taken from the CEAPS institutional positioning. The independent expansion of A is not presented until officially approved.</p></div></div><section className="mt-16 border-t border-[var(--color-border-default)] pt-10"><SectionHeading eyebrow="The people behind C.A.L.M Spaces" title="Support grounded in people." description="Institutional roles are shown as provided and must be verified against official CEAPS profiles before public launch." /><div className="grid gap-6 md:grid-cols-2">{leadTeam.map((member) => <article key={member.id} className="border-t border-[var(--color-border-default)] pt-5"><div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-surface-muted)] text-lg text-[var(--color-text-primary)]">{member.name.split(" ").filter(Boolean).slice(-2).map((part) => part[0]).join("")}</div><h3 className="mt-5 text-2xl text-[var(--color-text)]">{member.name}</h3><p className="mt-2 text-sm font-medium text-[var(--color-sage-strong)]">{member.role}</p><p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{member.bio}</p><p className="mt-3 text-xs text-[var(--color-muted)]">Official photograph and profile link pending approval.</p></article>)}</div><Link href="/team" className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-sage-strong)]">Meet the team <ArrowRight className="h-4 w-4" /></Link></section><section className="mt-16 grid gap-8 border-t border-[var(--color-border-default)] pt-10 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-sage-strong)]">Find us on campus</p><h2 className="mt-3 text-3xl text-[var(--color-text)]">Come find us.</h2></div><div className="flex gap-4"><MapPin className="h-6 w-6 shrink-0 text-[var(--color-sage-strong)]" /><div><p className="text-base font-medium text-[var(--color-text)]">{institutionalIdentity.location.name}</p>{institutionalIdentity.location.lines.map((line) => <p key={line} className="text-sm text-[var(--color-muted)]">{line}</p>)}<p className="mt-4 text-xs text-[var(--color-muted)]">Directions, visiting information, and opening hours require official confirmation.</p></div></div></section><div className="mt-12 flex gap-3 border-t border-[var(--color-border-default)] pt-8 text-sm text-[var(--color-muted)]"><ShieldCheck className="h-5 w-5 text-[var(--color-sage-strong)]" />Institutional content is source-tracked and should be approved before launch.</div></PageContainer><Footer /></div>;
 }

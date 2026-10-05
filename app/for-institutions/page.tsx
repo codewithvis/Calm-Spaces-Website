@@ -1,0 +1,7 @@
+import { Footer, PageContainer, SectionHeading, SiteHeader } from "@/components/site-shell";
+
+export default function InstitutionsPage() {
+  return (
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]"><SiteHeader /><PageContainer><SectionHeading eyebrow="For institutions" title="Offer students a little more room to breathe" description="Calm Spaces helps educational communities make wellbeing resources, peer support, and professional pathways easier to find." /><div className="grid gap-6 md:grid-cols-3">{[["Student wellbeing", "Give students practical reflection and wellness spaces they can choose at their own pace."], ["Support pathways", "Connect peer listeners, professionals, resources, and safety information in one trusted experience."], ["Privacy boundaries", "Institutional support should never mean exposing individual student wellbeing information." ]].map(([title, description]) => <div key={title} className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"><h3 className="text-2xl text-[var(--color-text)]">{title}</h3><p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{description}</p></div>)}</div><div className="mt-10 rounded-2xl bg-[var(--color-surface-muted)] p-8"><h3 className="text-2xl text-[var(--color-text)]">Talk with our team</h3><p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--color-muted)]">We can explore the right support model, privacy boundaries, and resource structure for your campus.</p></div></PageContainer><Footer /></div>
+  );
+}

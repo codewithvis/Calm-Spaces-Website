@@ -1,0 +1,7 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Footer, PageContainer, SiteHeader } from "@/components/site-shell";
+
+const paths = [["I need someone to talk to", "Counselling, peer listeners, and Talk Space.", "/counselling"], ["I need a moment to breathe", "Breathing, grounding, focus, and reflection tools.", "/wellness"], ["I want to connect", "Community, listening circles, and C.A.L.M Companions.", "/calm-companions"], ["I want to learn", "Resources, workshops, and psycho-educational content.", "/resources"]];
+
+export default function FindSupportPage() { return <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]"><SiteHeader /><PageContainer><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-sage-strong)]">Find your space</p><h1 className="mt-5 max-w-2xl text-5xl leading-tight">What would feel helpful right now?</h1><div className="mt-12 grid gap-5 md:grid-cols-2">{paths.map(([title, description, href]) => <Link href={href} key={title} className="group border-t border-[var(--color-border-default)] py-6"><h2 className="text-2xl">{title}</h2><p className="mt-2 max-w-md text-sm leading-6 text-[var(--color-muted)]">{description}</p><ArrowRight className="mt-5 h-5 w-5 text-[var(--color-sage-strong)] transition-transform group-hover:translate-x-1" /></Link>)}</div></PageContainer><Footer /></div>; }
