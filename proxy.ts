@@ -13,7 +13,7 @@ export async function proxy(request: NextRequest) {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const isProtectedRoute = protectedPrefixes.some((prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`));
 
-  if (!url || !anonKey) {
+  if (!url || !anonKey || url.includes("your-project")) {
     return NextResponse.next();
   }
 

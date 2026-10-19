@@ -1,0 +1,17 @@
+{
+  "name": "C.A.L.M Spaces | SGT University",
+  "short_name": "Calm Spaces",
+  "description": "Cultivating Awareness, Lightness & Movement — Official student mental wellness initiative at SGT University under CEAPS.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFCFF",
+  "theme_color": "#7436D5",
+  "icons": [
+    {
+      "src": "/calm-spaces-mark.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

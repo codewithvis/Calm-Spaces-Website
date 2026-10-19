@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bloomGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EDE2FA" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#F5EFFD" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="stemGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A77BE8" />
+      <stop offset="100%" stop-color="#7436D5" />
+    </linearGradient>
+  </defs>
+
+  <!-- Gentle radiant aura -->
+  <circle cx="200" cy="200" r="180" fill="url(#bloomGlow)" />
+
+  <!-- Botanical flourishes -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- Gentle curved vine 1 -->
+    <path d="M120 320 C140 260 170 230 200 200 C230 170 260 140 280 80" stroke="url(#stemGrad)" stroke-width="2.5" opacity="0.6" />
+    <!-- Delicate branch 2 -->
+    <path d="M200 200 C170 170 150 140 140 100" stroke="#A77BE8" stroke-width="2" opacity="0.5" />
+    <!-- Delicate branch 3 -->
+    <path d="M220 180 C260 210 280 240 300 280" stroke="#E8B8DF" stroke-width="2" opacity="0.5" />
+
+    <!-- Blooming petals -->
+    <path d="M280 80 C290 70 305 75 300 90 C295 100 285 95 280 80 Z" fill="#E8B8DF" opacity="0.7" />
+    <path d="M280 80 C270 70 255 75 260 90 C265 100 275 95 280 80 Z" fill="#EDE2FA" opacity="0.8" />
+
+    <path d="M140 100 C130 90 115 95 120 110 C125 120 135 115 140 100 Z" fill="#A77BE8" opacity="0.6" />
+    <path d="M300 280 C310 270 325 275 320 290 C315 300 305 295 300 280 Z" fill="#E8B8DF" opacity="0.65" />
+
+    <!-- Leaves -->
+    <path d="M170 220 C155 210 150 195 160 195 C175 195 180 210 170 220 Z" fill="#A77BE8" opacity="0.5" />
+    <path d="M240 170 C255 160 260 145 250 145 C235 145 230 160 240 170 Z" fill="#EDE2FA" opacity="0.7" />
+
+    <!-- Floating stardust / seeds -->
+    <circle cx="210" cy="130" r="3" fill="#7436D5" opacity="0.4" />
+    <circle cx="250" cy="110" r="2" fill="#E8B8DF" opacity="0.6" />
+    <circle cx="160" cy="150" r="2.5" fill="#A77BE8" opacity="0.5" />
+    <circle cx="230" cy="240" r="3" fill="#EDE2FA" opacity="0.8" />
+  </g>
+</svg>

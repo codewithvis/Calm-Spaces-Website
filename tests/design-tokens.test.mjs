@@ -19,6 +19,6 @@ test("interaction contracts exist", () => {
 
 test("dark theme remaps semantic background and text", () => {
   assert.match(tokens, /@media \(prefers-color-scheme: dark\)/);
-  assert.match(tokens, /--color-bg-primary:\s*#18241f/);
-  assert.match(tokens, /--color-text-primary:\s*#eff2e9/);
+  assert.match(tokens, /--color-bg-primary:\s*#1b1124/);
+  assert.match(tokens, /--color-text-primary:\s*#f7f2fa/);
 });

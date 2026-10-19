@@ -1,8 +1,9 @@
-"use client";
+  "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { getSafeNextPath } from "@/lib/auth/redirect";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type AuthMode = "sign-in" | "sign-up" | "reset";
@@ -33,7 +34,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       const supabase = createSupabaseBrowserClient();
       const redirectTo = `${window.location.origin}/auth/callback`;
       const requestedPath = new URLSearchParams(window.location.search).get("next");
-      const redirectPath = requestedPath?.startsWith("/") ? requestedPath : "/dashboard";
+      const redirectPath = getSafeNextPath(requestedPath);
 
       if (mode === "sign-in") {
         const result = await supabase.auth.signInWithPassword({ email, password });

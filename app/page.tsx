@@ -1,65 +1,659 @@
 import Link from "next/link";
-import { ArrowRight, BookOpenText, Heart, Leaf, MapPin, MessageSquareText, ShieldCheck, Sparkles, UsersRound, Wind } from "lucide-react";
+import Image from "next/image";
+import {
+  ArrowRight,
+  BookOpenText,
+  Heart,
+  Sparkles,
+  MapPin,
+  Calendar,
+  UsersRound,
+  Wind,
+  ShieldCheck,
+  CheckCircle2,
+  Compass,
+  MessageSquareText,
+  Activity,
+  Feather,
+} from "lucide-react";
 import { Footer, SiteHeader } from "@/components/site-shell";
 import { MoodDiscovery, NeedDiscovery } from "@/components/mood-discovery";
-import { institutionalIdentity, institutionalTeam } from "@/content/institutional";
-
-const services = [
-  { title: "One-on-one counselling", description: "Private, student-focused conversations for academic, personal, relationship, and transition concerns.", href: "/counselling", icon: MessageSquareText },
-  { title: "C.A.L.M Companions", description: "Approachable peer-listener support from students who understand campus life.", href: "/calm-companions", icon: UsersRound },
-  { title: "Wellness toolkit", description: "Breathing, grounding, focus, gratitude, reflection, and movement-based ways to take a moment.", href: "/wellness", icon: Wind },
-  { title: "Resources and workshops", description: "Psycho-educational resources and campus programming to help you understand yourself a little better.", href: "/resources", icon: BookOpenText },
-];
+import { CalmPhilosophyInteractive } from "@/components/calm-philosophy-interactive";
+import { NewsletterCard } from "@/components/newsletter-card";
+import { defaultInitiatives } from "@/lib/data/initiatives";
+import { defaultEvents } from "@/lib/data/events";
+import { defaultResources } from "@/lib/data/resources";
+import { officialTeamList } from "@/lib/data/team";
+import { institutionalIdentity } from "@/content/institutional";
 
 export default function HomePage() {
-  const lead = institutionalTeam.find((member) => member.id === "parvneet-kaur");
+  const featuredInitiatives = defaultInitiatives.slice(0, 4);
+  const upcomingEvents = defaultEvents.filter((e) => e.status !== "Past").slice(0, 3);
+  const featuredResources = defaultResources.slice(0, 4);
+  const coreTeam = officialTeamList.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+      {/* SECTION 1 — Sticky Navigation */}
       <SiteHeader />
+
       <main>
-        <section className="border-b border-[var(--color-border-default)] bg-[var(--color-bg-secondary)]">
-          <div className="mx-auto grid min-h-[680px] max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
-            <div className="max-w-2xl">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
-                <span>{institutionalIdentity.name}</span><span aria-hidden="true">/</span><span>CEAPS</span><span aria-hidden="true">/</span><span>SGT University</span>
+        {/* SECTION 2 — Hero */}
+        <section className="relative overflow-hidden border-b border-[var(--calm-border-soft)] bg-gradient-to-b from-white via-[var(--calm-lavender-pale)]/40 to-white py-16 lg:py-28">
+          {/* Subtle botanical radiant gradients */}
+          <div className="pointer-events-none absolute -left-20 top-0 h-96 w-96 rounded-full bg-[var(--calm-lavender-soft)]/50 blur-3xl" />
+          <div className="pointer-events-none absolute -right-20 top-20 h-96 w-96 rounded-full bg-[var(--calm-pink-blush)]/35 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid items-center gap-12 lg:grid-cols-12">
+              {/* Left Column: Expressive Typography & CTAs */}
+              <div className="lg:col-span-7">
+                {/* Institutional Pill */}
+                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--calm-border-soft)] bg-white px-4 py-1.5 shadow-xs">
+                  <span className="flex h-2 w-2 rounded-full bg-[var(--color-brand-primary)]" />
+                  <span className="text-xs font-bold tracking-wider uppercase text-[var(--color-brand-primary)]">
+                    CEAPS · SGT University
+                  </span>
+                </div>
+
+                {/* Hero Headline */}
+                <h1 className="mt-6 font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-6xl lg:text-7xl leading-[1.08]">
+                  Your Mind Deserves a Space to Bloom.
+                </h1>
+
+                {/* Supporting Copy */}
+                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-text-secondary)] sm:text-xl">
+                  A welcoming space to cultivate awareness, embrace lightness and create meaningful movement towards emotional well-being — under the aegis of CEAPS at SGT University.
+                </p>
+
+                {/* CTA Hierarchy */}
+                <div className="mt-10 flex flex-wrap items-center gap-4">
+                  <Link
+                    href="#initiatives"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-brand-primary)] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-md hover:bg-[var(--color-brand-primary-hover)] transition-all hover:scale-[1.02]"
+                  >
+                    <span>Explore Calm Spaces</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+
+                  <Link
+                    href="/initiatives"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[var(--calm-border-soft)] bg-white px-7 py-3.5 text-sm font-semibold text-[var(--color-text-primary)] shadow-xs hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)] transition"
+                  >
+                    <span>Discover Our Initiatives</span>
+                  </Link>
+                </div>
+
+                {/* Location Quick Trust Tag */}
+                <div className="mt-8 flex items-center gap-2.5 text-xs text-[var(--calm-text-muted)]">
+                  <MapPin className="h-4 w-4 text-[var(--color-brand-primary)]" />
+                  <span>Located at A Block, Lower Ground Floor, Room No. 10 · Walk-ins Welcome</span>
+                </div>
               </div>
-              <h1 className="mt-7 max-w-xl text-[clamp(3.5rem,8vw,6.75rem)] leading-[0.94] tracking-tight text-[var(--color-text-primary)]">You deserve a space to pause.</h1>
-              <p className="mt-8 max-w-xl text-xl leading-9 text-[var(--color-text-secondary)]">{institutionalIdentity.shortBio} Take a breath, notice how you&apos;re feeling, and find the support that feels right for you.</p>
-              <div className="mt-9 flex flex-wrap gap-4"><Link href="#check-in" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-brand-primary)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--color-brand-primary-hover)]">Find your space <ArrowRight className="h-4 w-4" /></Link><Link href="/find-support" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-primary)] px-6 py-3 text-sm font-medium text-[var(--color-text-primary)]">Talk to someone</Link></div>
-              <p className="mt-5 text-xs text-[var(--color-text-tertiary)]">A student wellbeing initiative under the aegis of CEAPS at SGT University.</p>
-            </div>
-            <div className="relative mx-auto w-full max-w-lg lg:justify-self-end">
-              <div className="relative overflow-hidden border border-[var(--color-border-default)] bg-[var(--color-surface-primary)] p-3 shadow-[var(--shadow-lg)] [clip-path:polygon(8%_0,100%_0,100%_88%,88%_100%,0_100%,0_12%)]">
-                <div className="flex min-h-[420px] flex-col justify-between bg-[var(--color-brand-primary)] p-7 text-white sm:min-h-[500px] sm:p-10">
-                  <div className="flex items-center justify-between text-sm"><span className="font-medium">A space between everything.</span><Leaf className="h-5 w-5" /></div>
-                  <div><p className="max-w-sm font-[family-name:var(--font-display)] text-5xl leading-tight sm:text-6xl">Between pressure and pause.</p><p className="mt-6 max-w-sm text-sm leading-6 text-white/80">A place to reflect, reconnect, find support, and build the resilience to navigate university life.</p></div>
-                  <div className="flex items-center gap-3 border-t border-white/25 pt-5 text-sm text-white/80"><Heart className="h-4 w-4" /> Take what helps. Leave what doesn&apos;t.</div>
+
+              {/* Right Column: Authentic Emblem & Botanical Composition */}
+              <div className="lg:col-span-5 flex justify-center">
+                <div className="relative w-full max-w-md">
+                  {/* Subtle blooming backdrop glow */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-[var(--color-brand-primary)]/20 via-[var(--calm-violet-secondary)]/15 to-transparent blur-xl" />
+
+                  {/* Framed Official Logo Card */}
+                  <div className="relative overflow-hidden rounded-3xl border border-[var(--calm-border-soft)] bg-white p-5 shadow-xl sm:p-7">
+                    <div className="relative aspect-[450/330] w-full overflow-hidden rounded-2xl bg-[var(--calm-lavender-pale)]/50 border border-[var(--calm-border-soft)]/60 flex items-center justify-center p-2">
+                      <Image
+                        src="/calm-spaces-official-logo.png"
+                        alt="C.A.L.M Spaces Official Logo — Cultivating Awareness, Lightness & Movement"
+                        width={450}
+                        height={330}
+                        className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-105"
+                        priority
+                      />
+                    </div>
+
+                    <div className="mt-5 rounded-2xl border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] p-4 text-xs">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-[var(--color-brand-primary)]">
+                        <span>C.A.L.M. FRAMEWORK</span>
+                        <Sparkles className="h-3.5 w-3.5" />
+                      </div>
+                      <p className="mt-1 font-medium italic text-[var(--color-text-primary)]">
+                        &ldquo;{institutionalIdentity.calmPhrase}&rdquo;
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <div id="check-in"><MoodDiscovery /></div>
-        <NeedDiscovery />
+        {/* Public Mood Discovery Interactive Section */}
+        <div id="check-in">
+          <MoodDiscovery />
+        </div>
 
-        <section className="border-y border-[var(--color-border-default)] bg-[var(--color-surface-primary)]">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:items-start"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">More than a counselling room</p><h2 className="mt-4 max-w-md text-5xl leading-tight">Support can look different for everyone.</h2></div><div className="grid gap-8 text-base leading-8 text-[var(--color-text-secondary)] sm:grid-cols-2"><p>{institutionalIdentity.officialBio}</p><p>C.A.L.M Spaces brings together counselling, peer support, support groups, listening circles, workshops, psycho-educational resources, reflective practices, and movement-based expressive activities so wellbeing can be part of student life before things feel overwhelming.</p></div></div>
+        {/* SECTION 3 — Introduction */}
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-5">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                <span>Who We Are</span>
+              </div>
+              <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl leading-tight">
+                More Than a Space. A Journey Towards Well-being.
+              </h2>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <span className="rounded-xl border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-brand-primary)]">
+                  Holistic Well-being Unit
+                </span>
+                <span className="rounded-xl border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-brand-primary)]">
+                  Under CEAPS aegis
+                </span>
+                <span className="rounded-xl border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-brand-primary)]">
+                  SGT University Campus
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7 space-y-5 text-base leading-relaxed text-[var(--color-text-secondary)] sm:text-lg">
+              <p>
+                {institutionalIdentity.officialBio}
+              </p>
+              <p>
+                University life brings exciting milestones, but it also introduces transitions, rigorous assessments, and personal uncertainty. Calm Spaces exists so you never have to navigate academic strain or emotional vulnerability alone. Whether you drop by to breathe quietly, participate in an expressive art workshop, or talk through a challenge in complete confidence, this space is yours.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/about"
+                  className="inline-flex items-center gap-2 text-sm font-bold text-[var(--color-brand-primary)] hover:text-[var(--color-brand-primary-hover)] transition"
+                >
+                  <span>Learn about our mission and institutional framework</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="flex flex-col justify-between gap-5 border-b border-[var(--color-border-default)] pb-8 md:flex-row md:items-end"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">Ways we can support you</p><h2 className="mt-4 text-5xl leading-tight">Start with what feels possible.</h2></div><Link href="/find-support" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-link)]">Find support <ArrowRight className="h-4 w-4" /></Link></div><div className="mt-8 grid gap-x-8 gap-y-10 md:grid-cols-2">{services.map((service) => { const Icon = service.icon; return <Link href={service.href} key={service.title} className="group border-b border-[var(--color-border-subtle)] pb-8"><Icon className="h-6 w-6 text-[var(--color-brand-primary)]" /><h3 className="mt-5 text-2xl">{service.title}</h3><p className="mt-3 max-w-md text-sm leading-6 text-[var(--color-text-secondary)]">{service.description}</p><ArrowRight className="mt-5 h-4 w-4 text-[var(--color-text-tertiary)] transition-transform group-hover:translate-x-1" /></Link>; })}</div></section>
+        {/* SECTION 4 — The C.A.L.M. Philosophy (Interactive) */}
+        <CalmPhilosophyInteractive />
 
-        <section className="bg-[var(--color-surface-sunken)]"><div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">Built within SGT University</p><h2 className="mt-4 text-5xl leading-tight">A student-facing space with an institutional home.</h2><p className="mt-5 max-w-lg text-base leading-7 text-[var(--color-text-secondary)]">C.A.L.M Spaces operates under the Centre of Excellence for Andragogical and Pedagogical Sciences (CEAPS), connecting student wellbeing with learning, growth, and personal development.</p><div className="mt-8 flex flex-wrap gap-4"><Link href="/about" className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-primary)] px-5 py-3 text-sm font-medium text-white">Our approach <ArrowRight className="h-4 w-4" /></Link><Link href="/team" className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border-default)] px-5 py-3 text-sm font-medium">Meet the team</Link></div></div><div className="grid gap-6 sm:grid-cols-2"><div className="border-t border-[var(--color-border-strong)] pt-5"><ShieldCheck className="h-6 w-6 text-[var(--color-brand-primary)]" /><h3 className="mt-5 text-2xl">Your privacy matters</h3><p className="mt-3 text-sm leading-6 text-[var(--color-text-secondary)]">Sensitive spaces are designed around protected account ownership and the existing security model. Public content never exposes private journal or mood data.</p></div><div className="border-t border-[var(--color-border-strong)] pt-5"><Sparkles className="h-6 w-6 text-[var(--color-brand-primary)]" /><h3 className="mt-5 text-2xl">The CALM framework</h3><p className="mt-3 text-sm leading-6 text-[var(--color-text-secondary)]">{institutionalIdentity.calmPhrase}</p></div></div></div></section>
+        {/* Public Need Discovery (Low-pressure entry points) */}
+        <NeedDiscovery />
 
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-10 border-b border-[var(--color-border-default)] pb-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">People who make it possible</p><h2 className="mt-4 text-5xl leading-tight">Support grounded in people.</h2></div><div className="flex items-start gap-5"><div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-sunken)] text-lg">{lead?.name.split(" ").filter(Boolean).slice(-2).map((part) => part[0]).join("")}</div><div><h3 className="text-2xl">{lead?.name}</h3><p className="mt-1 text-sm font-medium text-[var(--color-brand-primary)]">{lead?.role}</p><p className="mt-3 max-w-xl text-sm leading-6 text-[var(--color-text-secondary)]">{lead?.bio}</p><Link href="/team" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-link)]">Meet the people behind C.A.L.M Spaces <ArrowRight className="h-4 w-4" /></Link></div></div></div></section>
+        {/* SECTION 5 — What We Do */}
+        <section className="border-t border-[var(--calm-border-soft)] bg-white py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                <span>Our Core Activities</span>
+              </div>
+              <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl">
+                Support Built for Every Season of Campus Life.
+              </h2>
+              <p className="mt-3 text-base text-[var(--color-text-secondary)] sm:text-lg">
+                We combine psychological education, peer empathy, somatic movement, and quiet reflection.
+              </p>
+            </div>
 
-        <section className="border-y border-[var(--color-border-default)] bg-[var(--color-bg-secondary)]"><div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">Find us on campus</p><h2 className="mt-4 text-5xl leading-tight">Come find your space.</h2></div><div className="flex gap-5"><MapPin className="h-6 w-6 shrink-0 text-[var(--color-brand-primary)]" /><div><h3 className="text-2xl">{institutionalIdentity.location.name}</h3>{institutionalIdentity.location.lines.map((line) => <p key={line} className="text-sm text-[var(--color-text-secondary)]">{line}</p>)}<p className="mt-5 text-sm leading-6 text-[var(--color-text-secondary)]">Directions, visiting information, and opening hours will be published after official campus confirmation.</p><Link href="/visit-us" className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-link)]">Visit us <ArrowRight className="h-4 w-4" /></Link></div></div></div></section>
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  title: "One-on-One Counselling",
+                  desc: "Private, confidential guidance with CEAPS psychologists in Room 10. For academic pressure, transitions, stress, and emotional regulation.",
+                  href: "/counselling",
+                  icon: MessageSquareText,
+                  badge: "Confidential",
+                },
+                {
+                  title: "C.A.L.M Companions",
+                  desc: "Approachable peer support from trained student peer listeners who understand the authentic rhythm of university life.",
+                  href: "/calm-companions",
+                  icon: UsersRound,
+                  badge: "Peer Support",
+                },
+                {
+                  title: "Expressive Arts & Mindful Reset",
+                  desc: "Workshops like 'Colour the Chaos', clay modeling, and mandalas to process emotions non-verbally and release mental clutter.",
+                  href: "/initiatives#colour-the-chaos",
+                  icon: Feather,
+                  badge: "Creative Arts",
+                },
+                {
+                  title: "Somatic Grounding & Walks",
+                  desc: "Mindful morning campus walks and diaphragmatic breathing sessions across SGT University's green lawns.",
+                  href: "/initiatives#mindful-campus-walks",
+                  icon: Wind,
+                  badge: "Movement",
+                },
+                {
+                  title: "Exam Resilience & De-stress",
+                  desc: "Targeted support modules providing sleep hygiene guidelines, test anxiety decompression, and cognitive stamina pacing.",
+                  href: "/initiatives#exam-destress-hub",
+                  icon: Sparkles,
+                  badge: "Academic",
+                },
+                {
+                  title: "Psycho-Educational Resource Hub",
+                  desc: "Evidence-based articles, guided audio resets, video exercises, and downloadable student self-care manuals.",
+                  href: "/resources",
+                  icon: BookOpenText,
+                  badge: "Educational",
+                },
+              ].map((activity) => {
+                const AIcon = activity.icon;
+                return (
+                  <Link
+                    key={activity.title}
+                    href={activity.href}
+                    className="group flex flex-col justify-between rounded-3xl border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] p-7 transition duration-300 hover:border-[var(--color-brand-primary)] hover:bg-white hover:shadow-lg"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--calm-lavender-pale)] text-[var(--color-brand-primary)] group-hover:bg-[var(--color-brand-primary)] group-hover:text-white transition duration-200">
+                          <AIcon className="h-6 w-6" />
+                        </div>
+                        <span className="rounded-full border border-[var(--calm-border-soft)] bg-white px-2.5 py-0.5 text-[10px] font-bold text-[var(--color-brand-primary)]">
+                          {activity.badge}
+                        </span>
+                      </div>
 
-        <section className="mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 lg:px-8"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">Whenever you need it</p><h2 className="mx-auto mt-5 max-w-3xl text-5xl leading-tight">Whatever today feels like, you don&apos;t have to navigate it alone.</h2><div className="mt-9 flex flex-wrap justify-center gap-4"><Link href="/find-support" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-brand-primary)] px-6 py-3 text-sm font-medium text-white">Find your space <ArrowRight className="h-4 w-4" /></Link><Link href="/visit-us" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[var(--color-border-default)] px-6 py-3 text-sm font-medium">Visit C.A.L.M Spaces</Link></div><p className="mt-7 text-xs uppercase tracking-[0.16em] text-[var(--color-text-tertiary)]">C.A.L.M Spaces · CEAPS · SGT University</p></section>
+                      <h3 className="mt-5 text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand-primary)] transition">
+                        {activity.title}
+                      </h3>
+                      <p className="mt-2.5 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+                        {activity.desc}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 flex items-center gap-1.5 text-xs font-bold text-[var(--color-brand-primary)]">
+                      <span>Explore activity</span>
+                      <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 6 — Featured Initiatives */}
+        <section id="initiatives" className="border-t border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)]/30 py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-white px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                  <span>Signature Programs</span>
+                </div>
+                <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl">
+                  Featured Initiatives
+                </h2>
+                <p className="mt-2 text-base text-[var(--color-text-secondary)]">
+                  Living programs designed to embed well-being into SGT student culture.
+                </p>
+              </div>
+
+              <Link
+                href="/initiatives"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--calm-border-soft)] bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[var(--color-brand-primary)] shadow-xs hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)] transition shrink-0"
+              >
+                <span>View All Initiatives</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredInitiatives.map((init) => (
+                <article
+                  key={init.id}
+                  className="group flex flex-col justify-between rounded-3xl border border-[var(--calm-border-soft)] bg-white p-6 shadow-xs hover:border-[var(--color-brand-primary)] hover:shadow-lg transition duration-300"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="rounded-full bg-[var(--calm-lavender-pale)] px-2.5 py-1 text-[10px] font-bold text-[var(--color-brand-primary)] uppercase tracking-wider">
+                        {init.category}
+                      </span>
+                      <span className="text-[10px] font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-md">
+                        {init.status}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand-primary)] transition">
+                      {init.title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3">
+                      {init.description}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {init.pillars.map((pillar) => (
+                        <span
+                          key={pillar}
+                          className="rounded-md border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] px-2 py-0.5 text-[9.5px] font-medium text-[var(--calm-text-muted)]"
+                        >
+                          {pillar}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 border-t border-[var(--calm-border-soft)] pt-4">
+                    <Link
+                      href={`/initiatives#${init.slug}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-brand-primary)] hover:underline"
+                    >
+                      <span>Learn More</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 7 — Meet the Team */}
+        <section className="border-t border-[var(--calm-border-soft)] bg-white py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                  <span>Guiding Minds</span>
+                </div>
+                <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl">
+                  Meet the People Behind C.A.L.M Spaces
+                </h2>
+                <p className="mt-2 text-base text-[var(--color-text-secondary)]">
+                  Grounding our work in institutional expertise, psychological care, and empathetic student support.
+                </p>
+              </div>
+
+              <Link
+                href="/team"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--calm-border-soft)] bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[var(--color-brand-primary)] shadow-xs hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)] transition shrink-0"
+              >
+                <span>Full Team Directory</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {coreTeam.map((member) => (
+                <div
+                  key={member.id}
+                  className="rounded-3xl border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] p-7 shadow-xs hover:border-[var(--color-brand-primary)] hover:shadow-md transition"
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-white font-[family-name:var(--font-display)] text-xl font-bold shadow-xs"
+                      style={{ backgroundColor: member.avatarColor }}
+                    >
+                      {member.name.split(" ").filter(Boolean).slice(-2).map((p) => p[0]).join("")}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{member.name}</h3>
+                      <p className="text-xs font-semibold text-[var(--color-brand-primary)]">{member.primaryRole}</p>
+                      <p className="text-[11px] text-[var(--calm-text-muted)]">{member.institutionalRole}</p>
+                    </div>
+                  </div>
+
+                  <p className="mt-5 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-4">
+                    {member.bio}
+                  </p>
+
+                  <div className="mt-6 border-t border-[var(--calm-border-soft)] pt-4 text-xs font-semibold text-[var(--color-brand-primary)]">
+                    <Link href={`/team#${member.id}`} className="inline-flex items-center gap-1.5 hover:underline">
+                      <span>View verified profile</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 8 — Events and Activities */}
+        <section className="border-t border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)]/40 py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-white px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                  <span>Upcoming Programming</span>
+                </div>
+                <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl">
+                  Events &amp; Workshops
+                </h2>
+                <p className="mt-2 text-base text-[var(--color-text-secondary)]">
+                  Make room on your calendar for what restores you.
+                </p>
+              </div>
+
+              <Link
+                href="/events"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--calm-border-soft)] bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[var(--color-brand-primary)] shadow-xs hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)] transition shrink-0"
+              >
+                <span>All Campus Events</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {upcomingEvents.map((event) => (
+                <div
+                  key={event.id}
+                  className="flex flex-col justify-between rounded-3xl border border-[var(--calm-border-soft)] bg-white p-7 shadow-xs hover:border-[var(--color-brand-primary)] hover:shadow-lg transition"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="rounded-full bg-[var(--calm-lavender-pale)] px-3 py-1 font-bold text-[var(--color-brand-primary)]">
+                        {event.category}
+                      </span>
+                      <span className="text-[11px] font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-md">
+                        {event.status}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 text-xl font-bold text-[var(--color-text-primary)]">
+                      {event.title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3">
+                      {event.description}
+                    </p>
+
+                    <div className="mt-5 space-y-2 text-xs text-[var(--calm-text-muted)] border-t border-[var(--calm-border-soft)] pt-4">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-3.5 w-3.5 text-[var(--color-brand-primary)]" />
+                        <span>{event.formattedDate} · {event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-3.5 w-3.5 text-[var(--color-brand-primary)]" />
+                        <span className="truncate">{event.location}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-[var(--calm-border-soft)]">
+                    <Link
+                      href={`/events#${event.slug}`}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-brand-primary)] py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-xs hover:bg-[var(--color-brand-primary-hover)] transition"
+                    >
+                      <span>Register / View Details</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 9 — Resource Library Preview */}
+        <section className="border-t border-[var(--calm-border-soft)] bg-white py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-[var(--calm-lavender-pale)] px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                  <span>Psycho-Educational Center</span>
+                </div>
+                <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl">
+                  Curated Wellness Resources
+                </h2>
+                <p className="mt-2 text-base text-[var(--color-text-secondary)]">
+                  Practical reads, audio breathing resets, and evidence-based self-care guides.
+                </p>
+              </div>
+
+              <Link
+                href="/resources"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--calm-border-soft)] bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[var(--color-brand-primary)] shadow-xs hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)] transition shrink-0"
+              >
+                <span>Browse Full Library</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredResources.map((res) => (
+                <article
+                  key={res.id}
+                  className="group flex flex-col justify-between rounded-3xl border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] p-6 shadow-xs hover:border-[var(--color-brand-primary)] hover:bg-white hover:shadow-lg transition duration-300"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold uppercase tracking-wider text-[var(--color-brand-primary)]">
+                        {res.type}
+                      </span>
+                      <span className="text-[11px] text-[var(--calm-text-muted)] font-medium">
+                        {res.readTime}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-3 text-lg font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand-primary)] transition">
+                      {res.title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3">
+                      {res.summary}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 border-t border-[var(--calm-border-soft)] pt-4 text-xs font-semibold text-[var(--color-brand-primary)]">
+                    <Link href={`/resources#${res.slug}`} className="inline-flex items-center gap-1.5 hover:underline">
+                      <span>Read Guide</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 10 & 11 — Student Engagement & Authentic Perspective */}
+        <section className="border-t border-[var(--calm-border-soft)] bg-gradient-to-b from-[var(--calm-lavender-pale)]/50 to-white py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+              <div className="lg:col-span-6 space-y-6">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-white px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">
+                  <span>Student Community</span>
+                </div>
+                <h2 className="font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] sm:text-4xl lg:text-5xl">
+                  Who is Calm Spaces For?
+                </h2>
+                <p className="text-base leading-relaxed text-[var(--color-text-secondary)] sm:text-lg">
+                  Calm Spaces is not just for moments of deep distress. It is for anyone who has felt exhausted after a long day in the clinical labs, anyone who is second-guessing their progress, anyone who needs 15 minutes of uninterrupted quiet, or anyone who simply wants to share a conversation with an empathetic peer.
+                </p>
+
+                <div className="space-y-3 pt-2 text-sm text-[var(--color-text-primary)]">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-[var(--color-brand-primary)] shrink-0" />
+                    <span>No clinical diagnosis required — accessible to every enrolled SGT student</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-[var(--color-brand-primary)] shrink-0" />
+                    <span>Strict confidentiality maintained under CEAPS psychological ethics</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-[var(--color-brand-primary)] shrink-0" />
+                    <span>Drop-in lounge in Room 10 with herbal tea, reading nook, and creative space</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mission Reflection Quote Card */}
+              <div className="lg:col-span-6">
+                <div className="rounded-3xl border border-[var(--calm-border-soft)] bg-white p-8 shadow-xl sm:p-10">
+                  <span className="font-[family-name:var(--font-display)] text-5xl font-extrabold text-[var(--calm-violet-secondary)]">
+                    &ldquo;
+                  </span>
+                  <p className="mt-2 text-base italic leading-relaxed text-[var(--color-text-primary)] sm:text-lg">
+                    In university education, well-being is not separate from academic achievement; it is the ground from which true curiosity, resilience, and personal growth emerge. When a student feels safe to pause and reflect, their capacity to learn expands naturally.
+                  </p>
+
+                  <div className="mt-6 flex items-center gap-4 border-t border-[var(--calm-border-soft)] pt-5">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-brand-primary)] text-white font-bold">
+                      AC
+                    </div>
+                    <div>
+                      <p className="font-bold text-[var(--color-text-primary)]">Dr. Astha Chaudhry</p>
+                      <p className="text-xs text-[var(--calm-text-muted)]">Professor &amp; Director, CEAPS · Patron, C.A.L.M Spaces</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Newsletter Subscription Box */}
+            <div className="mt-16">
+              <NewsletterCard />
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 12 — Closing CTA */}
+        <section className="relative overflow-hidden border-t border-[var(--calm-border-soft)] bg-[var(--calm-plum-deep)] py-20 text-center text-white lg:py-28">
+          <div className="pointer-events-none absolute inset-0 opacity-20">
+            <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[var(--color-brand-primary)] blur-3xl" />
+            <div className="absolute -right-32 -bottom-32 h-96 w-96 rounded-full bg-[var(--calm-pink-blush)] blur-3xl" />
+          </div>
+
+          <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <span className="text-xs font-bold uppercase tracking-[0.24em] text-[var(--calm-violet-secondary)]">
+              An Open Invitation
+            </span>
+
+            <h2 className="mt-5 font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl leading-tight">
+              Every Mind Deserves a Little Space.
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--calm-lavender-soft)] sm:text-lg">
+              Take a moment. Explore, understand and move towards a healthier relationship with yourself. We are right here on campus whenever you feel ready.
+            </p>
+
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/find-support"
+                className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-[var(--calm-plum-deep)] shadow-lg hover:bg-[var(--calm-lavender-pale)] transition"
+              >
+                <span>Connect With Calm Spaces</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+
+              <Link
+                href="/contact"
+                className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/20 transition backdrop-blur-xs"
+              >
+                <span>Visit Us in Room 10</span>
+              </Link>
+            </div>
+
+            <p className="mt-8 text-xs uppercase tracking-[0.2em] text-[var(--calm-text-muted)]">
+              C.A.L.M Spaces · CEAPS · SGT University
+            </p>
+          </div>
+        </section>
       </main>
+
+      {/* SECTION 13 — Footer */}
       <Footer />
     </div>
   );
