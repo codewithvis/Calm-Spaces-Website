@@ -223,7 +223,7 @@ export default function ContactPage() {
                       </label>
                       <select
                         value={category}
-                        onChange={(e) => setCategory(e.target.value as any)}
+                        onChange={(e) => setCategory(e.target.value as ContactCategory)}
                         className="w-full rounded-2xl border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] px-4 py-3 text-sm text-[var(--color-text-primary)] outline-none focus:border-[var(--color-brand-primary)] focus:bg-white transition"
                       >
                         <option value="General Inquiry">General Inquiry</option>

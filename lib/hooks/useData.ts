@@ -17,30 +17,31 @@ import type { Event, Initiative, Resource } from "@/lib/supabase/types";
 // Helper: convert DB Event → local EventItem shape for the UI
 // ---------------------------------------------------------------------------
 function dbEventToLocal(e: Event): EventItem {
-  const statusMap: Record<string, string> = {
+  const statusMap: Record<string, EventItem["status"]> = {
     UPCOMING: "Upcoming",
     REGISTRATION_OPEN: "Registration Open",
     FULL: "Full",
     COMPLETED: "Past",
-    CANCELLED: "Cancelled",
+    CANCELLED: "Past",
   };
 
   return {
     id: e.id,
     slug: e.slug,
     title: e.title,
-    category: e.category,
+    category: (e.category as EventItem["category"]) || "Workshop",
     description: e.description,
-    fullDescription: e.full_description,
+    fullDescription: e.full_description || e.description,
     date: e.event_date,
+    formattedDate: e.event_date,
     time: e.event_time,
     location: e.location,
     facilitator: e.facilitator,
-    facilitatorRole: e.facilitator_role,
+    facilitatorRole: e.facilitator_role || "CEAPS Team",
     capacity: e.capacity,
     registeredCount: e.registered_count,
-    status: statusMap[e.status] ?? "Upcoming",
-    coverImage: e.cover_image_url,
+    status: (statusMap[e.status] ?? "Upcoming") as EventItem["status"],
+    coverImage: e.cover_image_url || "/botanical-motif.svg",
     tags: e.tags ?? [],
     departmentAffiliation: e.department_affiliation,
   };
@@ -50,7 +51,7 @@ function dbEventToLocal(e: Event): EventItem {
 // Helper: convert DB Initiative → local Initiative shape for the UI
 // ---------------------------------------------------------------------------
 function dbInitiativeToLocal(i: Initiative): LocalInitiative {
-  const statusMap: Record<string, string> = {
+  const statusMap: Record<string, LocalInitiative["status"]> = {
     PUBLISHED: "Active",
     REVIEW: "Upcoming",
     ARCHIVED: "Completed",
@@ -61,15 +62,15 @@ function dbInitiativeToLocal(i: Initiative): LocalInitiative {
     id: i.id,
     slug: i.slug,
     title: i.title,
-    category: i.category,
-    tagline: i.tagline,
+    category: (i.category as LocalInitiative["category"]) || "Expressive Arts",
+    tagline: i.tagline || "",
     description: i.description,
-    fullDescription: i.full_description,
-    status: statusMap[i.status] ?? "Active",
-    coverImage: i.cover_image_url,
-    pillars: (i.pillars ?? []) as LocalInitiative["pillars"],
-    schedule: i.schedule,
-    location: i.location,
+    fullDescription: i.full_description || i.description,
+    status: (statusMap[i.status] ?? "Active") as LocalInitiative["status"],
+    coverImage: i.cover_image_url || "/botanical-motif.svg",
+    pillars: (i.pillars ?? ["Awareness", "Lightness", "Movement"]) as LocalInitiative["pillars"],
+    schedule: i.schedule || "Regular schedule",
+    location: i.location || "CEAPS Hall",
     highlights: i.highlights ?? [],
     departmentAffiliation: i.department_affiliation,
   };
@@ -83,12 +84,12 @@ function dbResourceToLocal(r: Resource): ResourceItem {
     id: r.id,
     slug: r.slug,
     title: r.title,
-    category: r.category,
-    type: r.resource_type,
-    readTime: r.read_time,
+    category: (r.category as ResourceItem["category"]) || "Mental Health Awareness",
+    type: (r.resource_type as ResourceItem["type"]) || "Article",
+    readTime: r.read_time || "5 min read",
     summary: r.summary,
     author: r.author,
-    authorRole: r.author_role,
+    authorRole: r.author_role || "CEAPS Counselor",
     departmentAffiliation: r.department_affiliation,
     publishedDate: r.published_date,
     tags: r.tags ?? [],

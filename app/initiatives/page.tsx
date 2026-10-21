@@ -35,7 +35,7 @@ export default function InitiativesPage() {
     const matchesCat = selectedCategory === "All" || init.category === selectedCategory;
     const matchesPillar =
       selectedPillar === "All" ||
-      init.pillars.includes(selectedPillar as any);
+      (init.pillars as string[]).includes(selectedPillar);
 
     return matchesQuery && matchesCat && matchesPillar;
   });

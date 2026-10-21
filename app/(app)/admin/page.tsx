@@ -65,7 +65,7 @@ export default function AdminPage() {
 
   function handleStatusChange(id: string, status: ContactSubmission["status"]) {
     updateContactSubmissionStatus(id, status);
-    refreshAllData();
+    refreshLocalData();
     if (selectedSubmission && selectedSubmission.id === id) {
       setSelectedSubmission({ ...selectedSubmission, status });
     }
@@ -332,7 +332,7 @@ export default function AdminPage() {
                       </button>
                       <select
                         value={sub.status}
-                        onChange={(e) => handleStatusChange(sub.id, e.target.value as any)}
+                        onChange={(e) => handleStatusChange(sub.id, e.target.value as ContactSubmission["status"])}
                         className="rounded-xl border border-[var(--calm-border-soft)] bg-white px-2.5 py-1.5 text-xs text-[var(--color-text-primary)] outline-none"
                       >
                         <option value="New">Mark New</option>

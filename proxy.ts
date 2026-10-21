@@ -42,8 +42,21 @@ export async function proxy(request: NextRequest) {
 
   const requiredRole = rolePrefixes.find(({ prefix }) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`));
   if (user && requiredRole) {
-    const { data: profile } = await supabase.from("profiles").select("type").eq("id", user.id).maybeSingle();
-    if (profile?.type?.toUpperCase() !== requiredRole.role) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("type, role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const normalizedRole = ((profile?.role as string) || (profile?.type as string) || "STUDENT").toUpperCase();
+
+    const isAuthorized =
+      normalizedRole === "SUPER_ADMIN" ||
+      (requiredRole.role === "ADMIN" && (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")) ||
+      (requiredRole.role === "PEER_LISTENER" && (normalizedRole === "PEER_LISTENER" || normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")) ||
+      (requiredRole.role === "EXPERT" && (normalizedRole === "EXPERT" || normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN"));
+
+    if (!isAuthorized) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }

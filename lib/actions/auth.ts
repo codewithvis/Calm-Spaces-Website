@@ -54,15 +54,18 @@ export async function signUpAction(formData: {
     return { success: false, message: error.message };
   }
 
-  // Insert profile row (trigger may handle this in production)
+  // Insert profile row (trigger also handles this in production)
   if (data.user) {
     await supabase.from("profiles").upsert({
       id: data.user.id,
       email: parsed.data.email,
+      name: parsed.data.fullName,
       full_name: parsed.data.fullName,
       student_id: parsed.data.studentId ?? null,
       department: parsed.data.department ?? null,
+      course: parsed.data.department ?? null,
       role: "STUDENT",
+      type: "STUDENT",
     });
   }
 

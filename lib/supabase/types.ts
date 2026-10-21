@@ -1,6 +1,7 @@
 // =============================================================================
-// C.A.L.M Spaces · Supabase Database Types
-// Auto-maps to the schema in docs/supabase_schema.sql
+// C.A.L.M Spaces · Unified Supabase Database Types
+// Auto-maps to the unified schema in supabase/migrations/20261019000000_unified_schema.sql
+// Supports both Next.js Web Client & React Native / Android Client
 // =============================================================================
 
 export type UserRole =
@@ -13,6 +14,7 @@ export type UserRole =
   | "SUPER_ADMIN";
 
 export type ContentStatus = "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED";
+
 export type EventStatus =
   | "UPCOMING"
   | "REGISTRATION_OPEN"
@@ -20,27 +22,39 @@ export type EventStatus =
   | "COMPLETED"
   | "CANCELLED";
 
+export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+
 // --------------------------------------------------------------------------
-// profiles
+// 1. profiles (Canonical cross-platform user profile)
 // --------------------------------------------------------------------------
 export interface Profile {
   id: string;
   email: string;
-  full_name: string | null;
-  student_id: string | null;
-  department: string | null;
+  name: string | null;                     // Android primary
+  full_name: string | null;                // Web primary
+  username: string | null;
+  role: UserRole;                          // Web enum
+  type: string;                            // Android string representation
+  student_id: string | null;               // Web format
+  registration_number: number | null;      // Android format
+  department: string | null;               // Web format
+  course: string | null;                   // Android format
   year_of_study: string | null;
-  role: UserRole;
+  phone_number: number | null;
+  phone: string | null;
+  date_of_birth: string | null;
   avatar_url: string | null;
+  profile_picture_index: number | null;
   bio: string | null;
   is_verified_listener: boolean;
   is_expert: boolean;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
 // --------------------------------------------------------------------------
-// mood_entries
+// 2. mood_entries
 // --------------------------------------------------------------------------
 export interface MoodEntry {
   id: string;
@@ -59,7 +73,128 @@ export interface MoodEntry {
 export type MoodEntryInsert = Omit<MoodEntry, "id" | "created_at">;
 
 // --------------------------------------------------------------------------
-// initiatives
+// 3. journal_entries (Cloud synchronized)
+// --------------------------------------------------------------------------
+export interface JournalEntry {
+  id: string;
+  user_id: string;
+  title: string | null;
+  content: string;
+  prompt: string | null;
+  tags: string[];
+  is_favorite: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export type JournalEntryInsert = Omit<JournalEntry, "id" | "created_at" | "updated_at">;
+
+// --------------------------------------------------------------------------
+// 4. community_post
+// --------------------------------------------------------------------------
+export interface CommunityPost {
+  id: string;
+  user_id: string;
+  prompt: string | null;
+  body: string;
+  author_alias: string;
+  is_anonymous: boolean;
+  is_flagged: boolean;
+  likes_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// --------------------------------------------------------------------------
+// 5. messaging
+// --------------------------------------------------------------------------
+export interface Conversation {
+  id: string;
+  participant_one: string;
+  participant_two: string;
+  conversation_type: "PEER" | "EXPERT";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+// --------------------------------------------------------------------------
+// 6. scheduling & bookings
+// --------------------------------------------------------------------------
+export interface ExpertSchedule {
+  id: string;
+  expert_id: string;
+  expert_registration_number: number | null;
+  expert_name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  mode: string;
+  is_booked: boolean;
+  created_at: string;
+}
+
+export interface StudentSchedule {
+  id: string;
+  peer_id: string;
+  peer_registration_number: number | null;
+  peer_name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  mode: string;
+  is_booked: boolean;
+  created_at: string;
+}
+
+export interface BookRequest {
+  id: string;
+  user_id: string;
+  provider_id: string;
+  provider_type: "EXPERT" | "PEER";
+  slot_id: string;
+  booking_date: string;
+  booking_time: string;
+  mode: string;
+  status: BookingStatus;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// --------------------------------------------------------------------------
+// 7. notifications & push tokens
+// --------------------------------------------------------------------------
+export interface AppNotification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  category: string;
+  is_read: boolean;
+  action_url: string | null;
+  created_at: string;
+}
+
+export interface PushToken {
+  id: string;
+  user_id: string;
+  token: string;
+  platform: "ANDROID" | "IOS" | "WEB";
+  created_at: string;
+  updated_at: string;
+}
+
+// --------------------------------------------------------------------------
+// 8. initiatives
 // --------------------------------------------------------------------------
 export interface Initiative {
   id: string;
@@ -82,7 +217,7 @@ export interface Initiative {
 }
 
 // --------------------------------------------------------------------------
-// events
+// 9. events & registrations
 // --------------------------------------------------------------------------
 export interface Event {
   id: string;
@@ -106,9 +241,6 @@ export interface Event {
   updated_at: string;
 }
 
-// --------------------------------------------------------------------------
-// event_registrations
-// --------------------------------------------------------------------------
 export interface EventRegistration {
   id: string;
   event_id: string;
@@ -121,10 +253,8 @@ export interface EventRegistration {
   created_at: string;
 }
 
-export type EventRegistrationInsert = Omit<EventRegistration, "id" | "created_at">;
-
 // --------------------------------------------------------------------------
-// resources
+// 10. resources
 // --------------------------------------------------------------------------
 export interface Resource {
   id: string;
@@ -149,7 +279,7 @@ export interface Resource {
 }
 
 // --------------------------------------------------------------------------
-// contact_submissions
+// 11. contact & newsletter
 // --------------------------------------------------------------------------
 export interface ContactSubmission {
   id: string;
@@ -164,11 +294,6 @@ export interface ContactSubmission {
   created_at: string;
 }
 
-export type ContactSubmissionInsert = Omit<ContactSubmission, "id" | "created_at" | "status" | "internal_notes">;
-
-// --------------------------------------------------------------------------
-// newsletter_subscriptions
-// --------------------------------------------------------------------------
 export interface NewsletterSubscription {
   id: string;
   email: string;
@@ -176,9 +301,6 @@ export interface NewsletterSubscription {
   subscribed_at: string;
 }
 
-// --------------------------------------------------------------------------
-// audit_logs
-// --------------------------------------------------------------------------
 export interface AuditLog {
   id: string;
   actor: string;
@@ -190,16 +312,18 @@ export interface AuditLog {
   created_at: string;
 }
 
-// --------------------------------------------------------------------------
-// Generic DB response helpers
-// --------------------------------------------------------------------------
-export type DbResult<T> =
-  | { data: T; error: null }
-  | { data: null; error: { message: string; code?: string } };
+export type EventRegistrationInsert = Omit<EventRegistration, "id" | "created_at">;
 
-export type PaginatedResult<T> = {
+export type ContactSubmissionInsert = Omit<ContactSubmission, "id" | "created_at" | "status" | "internal_notes"> & {
+  status?: string;
+  internal_notes?: string | null;
+};
+
+export interface PaginatedResult<T> {
   data: T[];
   count: number;
   page: number;
   pageSize: number;
-};
+  totalPages: number;
+}
+
