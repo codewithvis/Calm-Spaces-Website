@@ -4,7 +4,7 @@
 
 Build Calm Spaces into a production-grade web client for the existing Android product and Supabase backend. The web app must feel like a quiet, welcoming digital safe space while preserving existing authentication, database, RLS, Storage, Edge Function, and role contracts.
 
-Official institutional brand and content requirements are tracked in [docs/CALM_SPACES_BRAND_CONTENT_TODO.md](docs/CALM_SPACES_BRAND_CONTENT_TODO.md). The remaining inputs requested from the project owner are listed in [docs/CONTENT_AND_ASSET_REQUEST.md](docs/CONTENT_AND_ASSET_REQUEST.md). The official identity is C.A.L.M Spaces under CEAPS at SGT University; logo, photography, biographies, events, impact, and other institutional claims require source verification before launch.
+Official institutional brand and content requirements are tracked in [docs/CALM_SPACES_BRAND_CONTENT_TODO.md](docs/CALM_SPACES_BRAND_CONTENT_TODO.md). The remaining inputs requested from the project owner are listed in [docs/CONTENT_AND_ASSET_REQUEST.md](docs/CONTENT_AND_ASSET_REQUEST.md). The official identity is C.A.L.M Spaces at SGT University; logo, photography, biographies, events, impact, and other institutional claims require source verification before launch.
 
 ## Status key
 

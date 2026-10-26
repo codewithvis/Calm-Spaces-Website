@@ -126,8 +126,7 @@ export default function ContactPage() {
                   <div className="text-xs space-y-1">
                     <p className="font-bold text-sm text-[var(--color-text-primary)]">Official Emails</p>
                     <p><a href="mailto:helpdesk.calmspaces@sgtuniversity.org" className="text-[var(--color-brand-primary)] hover:underline">helpdesk.calmspaces@sgtuniversity.org</a> (Student Inquiries)</p>
-                    <p><a href="mailto:ceaps@sgtuniversity.org" className="text-[var(--color-brand-primary)] hover:underline">ceaps@sgtuniversity.org</a> (Department Office)</p>
-                    <p><a href="mailto:director.ceaps@sgtuniversity.org" className="text-[var(--color-brand-primary)] hover:underline">director.ceaps@sgtuniversity.org</a> (Director&apos;s Desk)</p>
+                    <p><a href="mailto:info@sgtuniversity.org" className="text-[var(--color-brand-primary)] hover:underline">info@sgtuniversity.org</a> (University Support)</p>
                   </div>
                 </div>
 
@@ -152,7 +151,7 @@ export default function ContactPage() {
                   Send a Confidential Message
                 </h3>
                 <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
-                  Your message goes directly to the CEAPS psychological coordination desk. Non-emergency inquiries receive a response within 1–2 working days.
+                  Your message goes directly to the C.A.L.M Spaces psychological coordination desk. Non-emergency inquiries receive a response within 1–2 working days.
                 </p>
 
                 {status && (
@@ -278,7 +277,7 @@ export default function ContactPage() {
                 <div className="mt-6 flex items-start gap-2.5 text-[11px] text-[var(--calm-text-muted)] border-t border-[var(--calm-border-soft)] pt-4">
                   <ShieldCheck className="h-4 w-4 text-[var(--color-brand-primary)] shrink-0 mt-0.5" />
                   <span>
-                    Your message is handled under CEAPS university privacy ethics. If you are experiencing acute crisis, please call Tele-MANAS at 14416 (24/7 Free).
+                    Your message is handled under strict university privacy ethics. If you are experiencing acute crisis, please call Tele-MANAS at 14416 (24/7 Free).
                   </span>
                 </div>
               </div>

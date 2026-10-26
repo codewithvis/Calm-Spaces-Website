@@ -2,7 +2,7 @@ import { Footer, PageContainer, SectionHeading, SiteHeader } from "@/components/
 
 export const metadata = {
   title: "Privacy Policy | C.A.L.M Spaces · SGT University",
-  description: "Transparent privacy practices protecting student well-being, psychological confidentiality, and database ownership rules under CEAPS.",
+  description: "Transparent privacy practices protecting student well-being, psychological confidentiality, and database ownership rules at SGT University.",
 };
 
 export default function PrivacyPage() {
@@ -20,7 +20,7 @@ export default function PrivacyPage() {
           <div>
             <h3 className="text-xl font-bold text-[var(--color-text-primary)]">1. Ethical Stance &amp; Purpose</h3>
             <p className="mt-3">
-              C.A.L.M Spaces functions under the aegis of the Centre of Excellence for Andragogical and Pedagogical Sciences (CEAPS) at SGT University. We recognize that mental wellness data is deeply personal. Our platform is architected so that public visitors can access resources, toolkits, and information without creating accounts or surrendering identity.
+              C.A.L.M Spaces is an official student well-being initiative at SGT University. We recognize that mental wellness data is deeply personal. Our platform is architected so that public visitors can access resources, toolkits, and information without creating accounts or surrendering identity.
             </p>
           </div>
 
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
             <ul className="mt-3 space-y-2 list-disc pl-5 text-xs">
               <li><strong>Public Browsing:</strong> No tracking cookies, no cross-site surveillance scripts. Anonymous mood tile check-ins remain solely in your local browser state.</li>
               <li><strong>Event Registration:</strong> Name, university email, and student ID collected strictly to ensure room capacity and communicate venue confirmations.</li>
-              <li><strong>Inquiry Submissions:</strong> Processed through secure server routes and stored in encrypted database modules accessible only to authorized CEAPS administrators.</li>
+              <li><strong>Inquiry Submissions:</strong> Processed through secure server routes and stored in encrypted database modules accessible only to authorized administrators.</li>
               <li><strong>Member Accounts:</strong> Profile, journal entries, and private check-ins are protected via PostgreSQL Row Level Security (RLS) ensuring that only your authenticated session can query your records.</li>
             </ul>
           </div>
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <div className="border-t border-[var(--calm-border-soft)] pt-6">
             <h3 className="text-xl font-bold text-[var(--color-text-primary)]">5. Contact Regarding Privacy</h3>
             <p className="mt-3">
-              If you have any questions or data concerns, contact the CEAPS data steward at <a href="mailto:helpdesk.calmspaces@sgtuniversity.org" className="text-[var(--color-brand-primary)] font-bold hover:underline">helpdesk.calmspaces@sgtuniversity.org</a>.
+              If you have any questions or data concerns, contact our data steward at <a href="mailto:helpdesk.calmspaces@sgtuniversity.org" className="text-[var(--color-brand-primary)] font-bold hover:underline">helpdesk.calmspaces@sgtuniversity.org</a>.
             </p>
           </div>
         </div>

@@ -16,14 +16,14 @@ export type SearchResultItem = {
 };
 
 export const staticPagesIndex: SearchResultItem[] = [
-  { id: "page-home", type: "Page", title: "Home — C.A.L.M Spaces", category: "Core Page", snippet: "Your mind deserves a space to bloom. Cultivating Awareness, Lightness & Movement under CEAPS at SGT University.", url: "/" },
-  { id: "page-about", type: "Page", title: "About Calm Spaces", category: "Institutional", snippet: "Our mission, vision, C.A.L.M. philosophy, and our institutional foundation under CEAPS at SGT University.", url: "/about" },
-  { id: "page-team", type: "Page", title: "Meet the Team", category: "People", snippet: "Meet Dr. Astha Chaudhry, Ms. Parvneet Kaur, Ms. Vaishnavi, CEAPS faculty, and student C.A.L.M Companions.", url: "/team" },
+  { id: "page-home", type: "Page", title: "Home — C.A.L.M Spaces", category: "Core Page", snippet: "Your mind deserves a space to bloom. Cultivating Awareness, Lightness & Movement at SGT University.", url: "/" },
+  { id: "page-about", type: "Page", title: "About Calm Spaces", category: "Institutional", snippet: "Our mission, vision, C.A.L.M. philosophy, and our institutional foundation at SGT University.", url: "/about" },
+  { id: "page-team", type: "Page", title: "Meet the Team", category: "People", snippet: "Meet Dr. Astha Chaudhry, Ms. Parvneet Kaur, Ms. Vaishnavi, wellness faculty, and student C.A.L.M Companions.", url: "/team" },
   { id: "page-initiatives", type: "Page", title: "Initiatives Directory", category: "Programs", snippet: "Explore Colour the Chaos, Listening Circles, Mindful Campus Walks, and the Exam De-stress Hub.", url: "/initiatives" },
   { id: "page-events", type: "Page", title: "Campus Events & Workshops", category: "Events", snippet: "Upcoming and past workshops, registration for mindfulness circles, and mental health awareness symposia.", url: "/events" },
   { id: "page-resources", type: "Page", title: "Educational Resource Library", category: "Library", snippet: "Articles, guided audio resets, videos, and downloadable psycho-educational PDF handbooks.", url: "/resources" },
   { id: "page-support", type: "Page", title: "Support & Crisis Assistance", category: "Support", snippet: "How to reach university counselling in Room 10, peer listening, and verified 24/7 national emergency helplines.", url: "/find-support" },
-  { id: "page-counselling", type: "Page", title: "One-on-One Counselling", category: "Support", snippet: "Confidential, student-centered psychological guidance with CEAPS psychologists.", url: "/counselling" },
+  { id: "page-counselling", type: "Page", title: "One-on-One Counselling", category: "Support", snippet: "Confidential, student-centered psychological guidance with professional psychologists.", url: "/counselling" },
   { id: "page-calm-companions", type: "Page", title: "C.A.L.M Companions Peer Support", category: "Support", snippet: "Approachable peer listening from trained student peers who understand campus life.", url: "/calm-companions" },
   { id: "page-contact", type: "Page", title: "Contact Us & Campus Location", category: "Contact", snippet: "Find us at A Block, Lower Ground Floor, Room 10, SGT University. Emails, phone, and inquiry form.", url: "/contact" },
   { id: "page-accessibility", type: "Page", title: "Accessibility Statement & Controls", category: "Settings", snippet: "WCAG 2.2 AA commitments, font sizing, high contrast, and reduced-motion preferences.", url: "/accessibility" },

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Search,
@@ -53,7 +54,7 @@ export function SiteHeader() {
           <div className="mx-auto flex max-w-7xl items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-brand-primary)]" />
-              <span>Official Student Well-being Initiative · CEAPS · SGT University</span>
+              <span>Official Student Well-being Initiative · SGT University</span>
             </div>
             <div className="hidden items-center gap-4 text-[10px] text-[var(--calm-text-muted)] sm:flex">
               <span>Room No. 10, Lower Ground Floor, A Block</span>
@@ -71,15 +72,15 @@ export function SiteHeader() {
             {/* Logo */}
             <LogoLink variant="full" className="shrink-0" />
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden items-center gap-0.5 xl:gap-1 lg:flex shrink min-w-0" aria-label="Main navigation">
+            {/* Desktop Navigation Links (shown on xl screens where width permits without crowding) */}
+            <nav className="hidden items-center gap-1 xl:flex shrink min-w-0" aria-label="Main navigation">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`rounded-full px-2.5 py-1.5 xl:px-3.5 xl:py-2 text-xs font-semibold tracking-wide transition whitespace-nowrap ${
+                    className={`rounded-full px-2.5 py-1.5 xl:px-3 xl:py-2 text-xs font-semibold tracking-wide transition whitespace-nowrap ${
                       isActive
                         ? "bg-[var(--calm-lavender-pale)] text-[var(--color-brand-primary)]"
                         : "text-[var(--color-text-secondary)] hover:bg-[var(--calm-white-warm)] hover:text-[var(--color-text-primary)]"
@@ -113,10 +114,18 @@ export function SiteHeader() {
                 <AccessibilityToolbar />
               </div>
 
+              {/* Sign In CTA */}
+              <Link
+                href="/login"
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-white px-3.5 py-2 text-xs font-bold text-[var(--color-brand-primary)] shadow-xs transition hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)] shrink-0"
+              >
+                <span>Sign In</span>
+              </Link>
+
               {/* Get Support Primary CTA */}
               <Link
                 href="/find-support"
-                className="hidden items-center gap-2 rounded-full bg-[var(--color-brand-primary)] px-4 py-2 xl:px-5 xl:py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-[var(--color-brand-primary-hover)] sm:inline-flex shrink-0 whitespace-nowrap"
+                className="hidden md:inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-primary)] px-4 py-2 xl:px-5 xl:py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-[var(--color-brand-primary-hover)] shrink-0 whitespace-nowrap"
               >
                 <span>Get Support</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -127,7 +136,7 @@ export function SiteHeader() {
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--calm-border-soft)] bg-white text-[var(--color-text-primary)] lg:hidden shrink-0"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--calm-border-soft)] bg-white text-[var(--color-text-primary)] xl:hidden shrink-0"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
@@ -137,7 +146,7 @@ export function SiteHeader() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="border-b border-[var(--calm-border-soft)] bg-white px-4 py-6 shadow-xl lg:hidden">
+          <div className="border-b border-[var(--calm-border-soft)] bg-white px-4 py-6 shadow-xl xl:hidden">
             <nav className="space-y-1.5">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
@@ -159,7 +168,24 @@ export function SiteHeader() {
               })}
             </nav>
 
-            <div className="mt-6 border-t border-[var(--calm-border-soft)] pt-5">
+            <div className="mt-6 border-t border-[var(--calm-border-soft)] pt-5 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center rounded-full border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] py-2.5 text-xs font-bold text-[var(--color-brand-primary)] shadow-xs hover:bg-[var(--calm-lavender-pale)] transition"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center rounded-full border border-[var(--color-brand-primary)] bg-[var(--calm-lavender-pale)] py-2.5 text-xs font-bold text-[var(--color-brand-primary)] shadow-xs hover:bg-[var(--calm-lavender-soft)] transition"
+                >
+                  Create Account
+                </Link>
+              </div>
+
               <Link
                 href="/find-support"
                 onClick={() => setMobileMenuOpen(false)}
@@ -356,7 +382,9 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-12">
           {/* Brand info */}
           <div className="lg:col-span-5 space-y-4">
-            <BrandLogo variant="full" showTagline={true} />
+            <div className="flex flex-wrap items-center gap-4">
+              <BrandLogo variant="full" showTagline={true} />
+            </div>
             <p className="max-w-md text-sm leading-relaxed text-[var(--color-text-secondary)]">
               {institutionalIdentity.officialBio}
             </p>
@@ -394,6 +422,7 @@ export function Footer() {
                 <li><Link href="/events" className="hover:text-[var(--color-brand-primary)]">Campus Events</Link></li>
                 <li><Link href="/resources" className="hover:text-[var(--color-brand-primary)]">Resource Library</Link></li>
                 <li><Link href="/dashboard" className="hover:text-[var(--color-brand-primary)]">Student Portal</Link></li>
+                <li><Link href="/login" className="hover:text-[var(--color-brand-primary)]">Sign In / Register</Link></li>
               </ul>
             </div>
 
@@ -408,7 +437,7 @@ export function Footer() {
                 <li><Link href="/calm-companions" className="hover:text-[var(--color-brand-primary)]">Peer Listeners</Link></li>
                 <li><Link href="/safety" className="hover:text-[var(--color-brand-primary)]">Safety &amp; Ethics</Link></li>
                 <li><Link href="/community-guidelines" className="hover:text-[var(--color-brand-primary)]">Community Rules</Link></li>
-                <li><Link href="/contact" className="hover:text-[var(--color-brand-primary)]">Contact CEAPS</Link></li>
+                <li><Link href="/contact" className="hover:text-[var(--color-brand-primary)]">Contact Us</Link></li>
               </ul>
             </div>
 
@@ -453,7 +482,7 @@ export function Footer() {
 
         {/* Bottom copyright & attribution */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--calm-border-soft)] pt-8 text-xs text-[var(--calm-text-muted)] sm:flex-row">
-          <p>© {new Date().getFullYear()} C.A.L.M Spaces · CEAPS · SGT University. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} C.A.L.M Spaces · SGT University. All rights reserved.</p>
           <p className="text-[11px]">Cultivating Awareness, Lightness &amp; Movement</p>
         </div>
       </div>

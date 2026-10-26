@@ -1,7 +1,27 @@
-import Link from "next/link";
-import { Heart } from "lucide-react";
-import { AuthForm } from "@/components/auth-form";
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { AuthLayout } from "@/components/auth/auth-layout";
+import { ResetView } from "@/components/auth/reset-view";
+import { Loader2 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Reset Password · Calm Spaces · SGT University",
+  description:
+    "Reset your password for Calm Spaces, SGT University. Secure and confidential account recovery.",
+};
 
 export default function ResetPage() {
-  return <main className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4 py-12"><div className="w-full"><Link href="/" className="mx-auto mb-8 flex w-fit items-center gap-2 text-sm font-medium text-[var(--color-text)]"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-sage)] text-white"><Heart className="h-4 w-4" /></span>Calm Spaces</Link><AuthForm mode="reset" /></div></main>;
+  return (
+    <AuthLayout mode="reset">
+      <Suspense
+        fallback={
+          <div className="flex h-64 w-full items-center justify-center rounded-3xl border border-[var(--calm-border-soft)] bg-white p-8">
+            <Loader2 className="h-8 w-8 animate-spin text-[var(--color-brand-primary)]" />
+          </div>
+        }
+      >
+        <ResetView />
+      </Suspense>
+    </AuthLayout>
+  );
 }

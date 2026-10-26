@@ -1,7 +1,27 @@
-import Link from "next/link";
-import { Heart } from "lucide-react";
-import { AuthForm } from "@/components/auth-form";
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { AuthLayout } from "@/components/auth/auth-layout";
+import { LoginView } from "@/components/auth/login-view";
+import { Loader2 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Sign In · Calm Spaces · SGT University",
+  description:
+    "Sign in to access your confidential student well-being dashboard, daily mood check-ins, journal reflections, and clinical appointments at SGT University.",
+};
 
 export default function SignInPage() {
-  return <main className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4 py-12"><div className="w-full"><Link href="/" className="mx-auto mb-8 flex w-fit items-center gap-2 text-sm font-medium text-[var(--color-text)]"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-sage)] text-white"><Heart className="h-4 w-4" /></span>Calm Spaces</Link><AuthForm mode="sign-in" /></div></main>;
+  return (
+    <AuthLayout mode="login">
+      <Suspense
+        fallback={
+          <div className="flex h-64 w-full items-center justify-center rounded-3xl border border-[var(--calm-border-soft)] bg-white p-8">
+            <Loader2 className="h-8 w-8 animate-spin text-[var(--color-brand-primary)]" />
+          </div>
+        }
+      >
+        <LoginView />
+      </Suspense>
+    </AuthLayout>
+  );
 }

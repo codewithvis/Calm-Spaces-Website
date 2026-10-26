@@ -109,7 +109,7 @@ Unified booking engine for peer support circles and expert clinical consultation
 | `slot_id` | `TEXT` | Specific schedule slot identifier |
 | `booking_date` | `DATE` | Scheduled date |
 | `booking_time` | `TEXT` | Slot time window (e.g. "14:00 - 14:45") |
-| `mode` | `TEXT` | `'online'` or `'offline'` (CEAPS Hall, SGT University) |
+| `mode` | `TEXT` | `'online'` or `'offline'` (Room No. 10, A Block, SGT University) |
 | `status` | `TEXT` | `'PENDING'`, `'CONFIRMED'`, `'CANCELLED'`, `'COMPLETED'` |
 | `notes` | `TEXT` | Private session intake notes |
 | `created_at` | `TIMESTAMPTZ`| Submission timestamp |

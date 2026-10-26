@@ -61,7 +61,12 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (request.nextUrl.pathname.startsWith("/auth/") && user && request.nextUrl.pathname !== "/auth/callback") {
+  const isAuthPage =
+    request.nextUrl.pathname.startsWith("/auth/") ||
+    request.nextUrl.pathname === "/login" ||
+    request.nextUrl.pathname === "/signup";
+
+  if (isAuthPage && user && request.nextUrl.pathname !== "/auth/callback") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

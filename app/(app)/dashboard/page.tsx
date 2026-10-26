@@ -253,7 +253,7 @@ export default function DashboardPage() {
             <div>
               <h3 className="text-lg text-[var(--color-text)]">Support Appointments</h3>
               <p className="mt-1 text-sm text-[var(--color-muted)]">
-                Schedule a consultation with CEAPS psychological counsellors or trained peer listeners.
+                Schedule a consultation with professional psychological counsellors or trained peer listeners.
               </p>
               <Link
                 href="/appointments"

@@ -27,8 +27,8 @@ export const defaultResources: ResourceItem[] = [
     readTime: "5 min read",
     summary: "A gentle, evidence-grounded framework for recognizing when cognitive pressure is stacking up and how to step back safely.",
     author: "Ms. Parvneet Kaur",
-    authorRole: "Lead Psychologist, C.A.L.M Spaces · CEAPS",
-    departmentAffiliation: "CEAPS · SGT University",
+    authorRole: "Lead Psychologist, C.A.L.M Spaces",
+    departmentAffiliation: "SGT University",
     publishedDate: "October 14, 2026",
     tags: ["Burnout", "Stress", "Pacing", "Student Well-being"],
     content: [
@@ -54,7 +54,7 @@ export const defaultResources: ResourceItem[] = [
     summary: "The fastest scientifically validated breathing technique to down-regulate acute hyper-arousal and restore parasympathetic calm.",
     author: "C.A.L.M Spaces Wellness Team",
     authorRole: "Mindfulness & Movement Faculty",
-    departmentAffiliation: "CEAPS Department",
+    departmentAffiliation: "SGT University",
     publishedDate: "October 02, 2026",
     tags: ["Breathing", "Grounding", "Panic Relief", "Somatic"],
     content: [
@@ -77,8 +77,8 @@ export const defaultResources: ResourceItem[] = [
     readTime: "7 min read",
     summary: "Why high-achieving students often feel like frauds, and how to disentangle your sense of self-worth from perfectionism.",
     author: "Dr. Astha Chaudhry",
-    authorRole: "Professor & Director, CEAPS · Patron, C.A.L.M Spaces",
-    departmentAffiliation: "CEAPS · SGT University",
+    authorRole: "Patron, C.A.L.M Spaces · SGT University",
+    departmentAffiliation: "SGT University",
     publishedDate: "September 28, 2026",
     tags: ["Self-Esteem", "Perfectionism", "Higher Education"],
     content: [
@@ -101,9 +101,9 @@ export const defaultResources: ResourceItem[] = [
     type: "Guide",
     readTime: "6 min read",
     summary: "Practical, hostel-friendly adaptations for improving sleep quality, cognitive consolidation, and emotional stability.",
-    author: "CEAPS Psychological Research Unit",
+    author: "C.A.L.M Spaces Psychological Research Unit",
     authorRole: "Student Wellness Researchers",
-    departmentAffiliation: "CEAPS · SGT University",
+    departmentAffiliation: "SGT University",
     publishedDate: "September 15, 2026",
     tags: ["Sleep", "Health", "Hostel Life", "Cognition"],
     content: [
@@ -126,12 +126,12 @@ export const defaultResources: ResourceItem[] = [
     readTime: "12-page manual",
     summary: "Official guidelines for active listening, non-judgmental holding space, psychological boundaries, and emergency referral protocols.",
     author: "C.A.L.M Spaces Editorial Team",
-    authorRole: "CEAPS Academic Framework",
-    departmentAffiliation: "CEAPS · SGT University",
+    authorRole: "C.A.L.M Spaces Framework",
+    departmentAffiliation: "SGT University",
     publishedDate: "August 2026",
     tags: ["Handbook", "Peer Support", "Guidelines", "Training"],
     content: [
-      "This handbook outlines the ethical and practical principles governing the C.A.L.M Companions peer-listener initiative under CEAPS at SGT University.",
+      "This handbook outlines the ethical and practical principles governing the C.A.L.M Companions peer-listener initiative at SGT University.",
       "Modules include: 1. Core Ethics of Confidentiality and Non-Judgment; 2. The Four Pillars of Active Listening; 3. Distinguishing Peer Support from Clinical Psychotherapy; 4. Crisis Protocol and Immediate Escalation Pathways to Professional Services."
     ],
     keyTakeaways: [
@@ -150,8 +150,8 @@ export const defaultResources: ResourceItem[] = [
     readTime: "4 min video",
     summary: "Visual and auditory guide for pulling attention out of spiraling worry thoughts and firmly back into present sensory reality.",
     author: "Ms. Vaishnavi",
-    authorRole: "Soft Skills Trainer, CEAPS",
-    departmentAffiliation: "CEAPS · SGT University",
+    authorRole: "Soft Skills Trainer, SGT University",
+    departmentAffiliation: "SGT University",
     publishedDate: "August 10, 2026",
     tags: ["Grounding", "Somatic", "Anxiety", "Video Guide"],
     content: [

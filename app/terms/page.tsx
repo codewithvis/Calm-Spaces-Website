@@ -20,7 +20,7 @@ export default function TermsPage() {
           <div>
             <h3 className="text-xl font-bold text-[var(--color-text-primary)]">1. Purpose &amp; Educational Boundary</h3>
             <p className="mt-3">
-              C.A.L.M Spaces is an official student well-being initiative operated under CEAPS at SGT University. The platform provides educational resources, peer listening circles, and access to campus counselling. <strong>It does not provide emergency medical intervention, psychiatric prescription services, or automated clinical diagnostics.</strong>
+              C.A.L.M Spaces is an official student well-being initiative operated at SGT University. The platform provides educational resources, peer listening circles, and access to campus counselling. <strong>It does not provide emergency medical intervention, psychiatric prescription services, or automated clinical diagnostics.</strong>
             </p>
           </div>
 
@@ -46,7 +46,7 @@ export default function TermsPage() {
           <div className="border-t border-[var(--calm-border-soft)] pt-6">
             <h3 className="text-xl font-bold text-[var(--color-text-primary)]">4. Intellectual Property</h3>
             <p className="mt-3">
-              The C.A.L.M Spaces name, official logo emblem, botanical brand assets, and educational publications are intellectual property of SGT University and CEAPS. Unauthorized commercial reproduction is prohibited.
+              The C.A.L.M Spaces name, official logo emblem, botanical brand assets, and educational publications are intellectual property of SGT University. Unauthorized commercial reproduction is prohibited.
             </p>
           </div>
         </div>

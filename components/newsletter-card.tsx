@@ -39,7 +39,7 @@ export function NewsletterCard() {
           Quiet Insights for Your Mind.
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-secondary)] sm:text-base">
-          Receive occasional psycho-educational reflections, upcoming workshop dates, and campus wellness announcements from the CEAPS team. No spam, ever.
+          Receive occasional psycho-educational reflections, upcoming workshop dates, and campus wellness announcements from the C.A.L.M Spaces team. No spam, ever.
         </p>
 
         {message ? (
