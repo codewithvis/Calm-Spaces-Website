@@ -21,11 +21,11 @@ export default function AppointmentsPage() {
           const { data, error } = await supabase
             .from("book_request")
             .select("*")
-            .or(`user_id.eq.${user.id},provider_id.eq.${user.id}`)
-            .order("booking_date", { ascending: true });
+            .or(`user_id.eq.${user.id},student_id.eq.${user.id},provider_id.eq.${user.id},expert_id.eq.${user.id}`)
+            .order("created_at", { ascending: false });
 
           if (!error && data) {
-            setBookings(data as BookRequest[]);
+            setBookings(data as any[]);
           }
         }
       } catch (err) {
@@ -34,7 +34,24 @@ export default function AppointmentsPage() {
         setLoading(false);
       }
     }
+
     loadBookings();
+
+    const supabase = createSupabaseBrowserClient();
+    const channel = supabase
+      .channel("appointments_realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "book_request" },
+        () => {
+          loadBookings();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
@@ -98,31 +115,51 @@ export default function AppointmentsPage() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <span className="inline-block rounded-md bg-[var(--calm-lavender-pale)] px-2 py-0.5 text-[10px] font-bold uppercase text-[var(--color-brand-primary)]">
-                      {booking.provider_type} Session
+                      {booking.provider_type || "Support"} Session
                     </span>
-                    <span className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
-                      booking.status === "CONFIRMED"
-                        ? "bg-[var(--color-success-bg)] text-[var(--color-brand-primary)]"
-                        : "bg-amber-50 text-amber-800"
-                    }`}>
-                      {booking.status}
+                    <span
+                      className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
+                        (booking.status || "pending").toLowerCase() === "approved" ||
+                        (booking.status || "pending").toLowerCase() === "confirmed"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : (booking.status || "pending").toLowerCase() === "complete" ||
+                            (booking.status || "pending").toLowerCase() === "completed"
+                          ? "bg-blue-100 text-blue-800"
+                          : (booking.status || "pending").toLowerCase() === "rejected"
+                          ? "bg-rose-100 text-rose-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
+                      {booking.status || "pending"}
                     </span>
                   </div>
                   <h3 className="text-base font-semibold text-[var(--color-text-primary)]">
-                    {booking.notes || `${booking.provider_type === "EXPERT" ? "Psychological Consultation" : "Peer Support Connection"}`}
+                    {booking.expert_name
+                      ? `Session with ${booking.expert_name}`
+                      : booking.notes ||
+                        `${
+                          booking.provider_type === "EXPERT"
+                            ? "Psychological Consultation"
+                            : "Peer Support Connection"
+                        }`}
                   </h3>
+                  {booking.notes && booking.expert_name && (
+                    <p className="text-xs text-[var(--color-muted)] italic">
+                      &quot;{booking.notes}&quot;
+                    </p>
+                  )}
                   <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--color-muted)]">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="h-3.5 w-3.5 text-[var(--color-brand-primary)]" />
-                      <span>{booking.booking_date}</span>
+                      <span>{booking.session_date || booking.booking_date || "Upcoming"}</span>
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-[var(--color-brand-primary)]" />
-                      <span>{booking.booking_time}</span>
+                      <span>{booking.session_time || booking.booking_time || "TBD"}</span>
                     </span>
                     <span className="flex items-center gap-1.5">
                       <MapPin className="h-3.5 w-3.5 text-[var(--color-brand-primary)]" />
-                      <span className="capitalize">{booking.mode}</span>
+                      <span className="capitalize">{booking.booking_mode || booking.mode || "offline"}</span>
                     </span>
                   </div>
                 </div>

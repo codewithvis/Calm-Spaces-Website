@@ -1,106 +1,123 @@
-# C.A.L.M Spaces — Backend Architecture
+# C.A.L.M Spaces — Backend & Four-Panel Synchronization Architecture
 
 ## 1. Executive Summary & Core Principle
 
-The C.A.L.M Spaces digital ecosystem connects the **Web Portal (Next.js)**, **Mobile Application (Android / React Native reference)**, **Admin & Faculty Management Panel**, and **Peer/Expert Workspaces** to a single, centralized backend powered by **Supabase (PostgreSQL 15+)**.
+The C.A.L.M Spaces digital ecosystem connects the **Web Portal (Next.js 16)**, **Mobile Application (Android / React Native reference on Google Play Store)**, **Admin & Faculty Management Panel**, **Clinical Expert Panel**, **Peer Listener Workspace**, and **Student Wellness Hub** to a single, authoritative backend powered by **Supabase (PostgreSQL 15+)**.
 
 ```
-+-----------------------------------------------------------------------------------+
-|                                 CLIENT PLATFORMS                                  |
-|                                                                                   |
-|  [ Next.js 15 Web Portal ]     [ Android / Mobile App ]     [ Admin / Staff UI ]  |
-|   - Student Wellness Hub        - Native Kotlin / RN App     - Role-Based Portal  |
-|   - Appointments & Booking      - Quick Check-in & Journal   - Clinical Analytics |
-|   - Realtime Community Wall     - Push Notifications (FCM)   - Content Management |
-+-----------------------------------------------------------------------------------+
-                                          |
-                      HTTPS REST / SSR / Bearer Tokens
-                                          v
-+-----------------------------------------------------------------------------------+
-|                    SHARED BACKEND & API LAYER (/api/v1)                           |
-|                                                                                   |
-|  - Auth & Session Resolution (Cookie for Web, Bearer Token for Mobile)           |
-|  - Input Validation (Zod Schemas)                                                 |
-|  - Offline / Self-Healing Graceful Fallback Layer (isSupabaseConfigured)         |
-|  - Role Normalization Engine (STUDENT, PEER_LISTENER, EXPERT, ADMIN, SUPER_ADMIN)|
-|  - Rate Limiting & Audit Logging                                                  |
-+-----------------------------------------------------------------------------------+
-                                          |
-                        PostgREST / Supabase Client SDK
-                                          v
-+-----------------------------------------------------------------------------------+
-|                        CENTRALIZED SUPABASE BACKEND                               |
-|                                                                                   |
-|  +------------------------+  +------------------------+  +---------------------+  |
-|  |     PostgreSQL DB      |  |     Supabase Auth      |  |  Supabase Storage   |  |
-|  | - Canonical profiles   |  | - auth.users UUID      |  | - avatars (public)  |  |
-|  | - community_post       |  | - JWT Session tokens   |  | - resources (public)|  |
-|  | - book_request         |  | - Password / OAuth     |  | - journals (private)|  |
-|  | - expert/student_sched |  +------------------------+  +---------------------+  |
-|  | - notifications        |                                                       |
-|  | - journal_entries      |  +------------------------+  +---------------------+  |
-|  | - CMS tables & Audit   |  |   Supabase Realtime    |  | Triggers & Functions|  |
-|  +------------------------+  | - notifications        |  | - sync_profile_dual |  |
-|                              | - community_post       |  | - on_auth_created   |  |
-|                              | - book_request         |  | - touch_updated_at  |  |
-|                              +------------------------+  +---------------------+  |
-+-----------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------------+
+|                                           CLIENT PLATFORMS                                              |
+|                                                                                                         |
+|  [ Student Panel ]       [ Peer Listener Desk ]     [ Clinical Expert Panel ]    [ Admin Control Panel] |
+|   - Mood check-ins        - Client sessions queue    - Clinical consultations     - 4-panel user stats  |
+|   - Private journal       - 50-min listening slots   - Working slots scheduler    - Role promotion/mgmt |
+|   - Buddy connect         - Supervised escrows       - Broadcast announcements    - Wall moderation     |
+|   - Campus wall & SOS     - Realtime booking sync    - Realtime request sync      - Platform CMS & audit|
++---------------------------------------------------------------------------------------------------------+
+                                                     |
+                                   HTTPS / PostgREST / Realtime WebSockets
+                                                     v
++---------------------------------------------------------------------------------------------------------+
+|                                    CENTRALIZED SUPABASE BACKEND                                         |
+|                                                                                                         |
+|  +--------------------------------+  +--------------------------------+  +----------------------------+ |
+|  |       PostgreSQL Database      |  |        Supabase Auth           |  |      Supabase Storage      | |
+|  | - public.profiles              |  | - Canonical auth.users UUID    |  | - avatars (public)         | |
+|  | - public.book_request          |  | - Email + Reg No resolution    |  | - resources (public)       | |
+|  | - public.expert_schedule       |  | - Encrypted JWT tokens         |  | - library_pdfs (public)    | |
+|  | - public.student_schedule      |  +--------------------------------+  +----------------------------+ |
+|  | - public.mood_entries          |                                                                     |
+|  | - public.journal_entries       |  +--------------------------------+  +----------------------------+ |
+|  | - public.community_post        |  |       Supabase Realtime        |  |   Database Triggers & RLS  | |
+|  | - public.notifications         |  | - admin_profiles_realtime      |  | - sync_profile_dual_fields | |
+|  | - public.messages              |  | - expert_workbench_realtime    |  | - handle_new_user trigger  | |
+|  | - CMS tables & audit_logs      |  | - peer_listener_realtime       |  | - Row Level Security (RLS) | |
+|  +--------------------------------+  +--------------------------------+  +----------------------------+ |
++---------------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
 ## 2. Platform Integrations
 
-### 2.1 Next.js 15 Web Portal
-* **Framework**: Next.js 15 App Router with TypeScript.
-* **Authentication**: Supabase SSR (`@supabase/ssr`) with encrypted HTTP-only session cookies.
-* **Access Control**: Dynamic route proxy (`proxy.ts`) verifying canonical user roles (`STUDENT`, `PEER_LISTENER`, `EXPERT`, `ADMIN`, `SUPER_ADMIN`).
-* **Realtime Subscriptions**: React hooks (`useRealtimeTable`, `useRealtimeEventCapacity`) listening directly to PostgreSQL publication changes.
+### 2.1 Next.js 16 Web Portal
+* **Framework**: Next.js 16.3.8 App Router with TypeScript.
+* **Authentication**: Supabase SSR (`@supabase/ssr`) with secure cookies. Supports sign-in via institutional email or numeric registration number.
+* **Access Control**: Dynamic route proxy (`proxy.ts`) verifying canonical user roles:
+  * `ADMIN` & `SUPER_ADMIN` $\rightarrow$ `/admin`
+  * `EXPERT` $\rightarrow$ `/expert`
+  * `PEER` & `PEER_LISTENER` $\rightarrow$ `/peer-listener`
+  * `STUDENT` $\rightarrow$ `/dashboard`
+* **Realtime Subscriptions**: Direct WebSocket listeners on `book_request`, `profiles`, and `community_post`.
 
 ### 2.2 Mobile Application (Android / React Native)
-* **Client Architecture**: Mobile client authenticating with Supabase Auth via standard email/password or OAuth.
-* **Token Handshake**: Requests pass `Authorization: Bearer <access_token>` to `/api/v1/*` endpoints.
-* **Dual-Field Synchronization**: Preserves existing mobile database fields (`name`, `type`, `course`, `registration_number`, `profile_picture_index`) while keeping them in sync with web fields (`full_name`, `role`, `department`, `student_id`).
+* **Client Architecture**: Expo Router SDK 52+ client published on Google Play Store.
+* **Shared Auth**: Uses the identical Supabase project, resolving registration number lookup via `profiles.registration_number`.
+* **Shared Tables**: Directly reads and writes `profiles`, `book_request`, `expert_schedule`, `student_schedule`, and `notifications`.
 
 ---
 
-## 3. Centralized Business Logic Layer
+## 3. Four-Panel Data Synchronization & Role Flow
 
-1. **Canonical Identity**: All records reference `auth.users(id)` as the foreign key `user_id`.
-2. **Dual-Field Profile Sync**: A PostgreSQL trigger `sync_profile_dual_fields()` maintains parity between Web and Mobile profile column conventions on every INSERT or UPDATE.
-3. **Role-Based Workspaces**:
-   * Students access the Wellness Dashboard, Community Reflection Wall, Journal, Mood Tracker, and Peer Booking.
-   * Verified Peer Listeners access their availability schedule and peer consultation requests.
-   * Faculty Experts access clinical appointment schedules, student notes, and case reports.
-   * Administrators access analytics, audit logs, CMS controls, and contact submissions.
-4. **Graceful Degradation**: When environment variables are missing during local development or network outages, the API layer provides structured 503 fallback responses without crashing the server.
-
----
-
-## 4. Cross-Platform Data Flow
+### 3.1 Role Change Synchronization Flow
+When an administrator promotes a user (e.g. from Student to Peer Listener or Clinical Expert) on the website or mobile app:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor MobileUser as Android User
-    participant MobileApp as Android Client
-    participant API as /api/v1 Centralized API
+    actor Admin as CEAPS Admin (Web / Android)
+    participant AdminUI as Admin Management UI
     participant DB as Supabase PostgreSQL
-    participant WebUser as Web User (Next.js)
+    participant MobileClient as Student / Peer Android App
+    participant WebClient as Student / Peer Web Browser
 
-    MobileUser->>MobileApp: Check in mood ("Reflective")
-    MobileApp->>API: POST /api/v1/mood (Bearer Token)
-    API->>DB: INSERT INTO mood_entries (user_id, mood_emoji, ...)
-    DB-->>API: 201 Created
-    API-->>MobileApp: { success: true, entry: {...} }
+    Admin->>AdminUI: Select user & promote to "PEER" / "PEER_LISTENER"
+    AdminUI->>DB: UPDATE profiles SET type = 'PEER', role = 'PEER_LISTENER' WHERE id = user_id
+    DB->>DB: Fire trigger sync_profile_dual_fields()
+    DB-->>AdminUI: 200 OK (Row Updated)
+    
+    par Realtime Broadcast
+        DB->>MobileClient: postgres_changes on 'profiles' (channel admin_users / peer_clients)
+        MobileClient->>MobileClient: Invalidate query cache & activate Peer Listener Tab
+    and
+        DB->>WebClient: postgres_changes on 'profiles' (channel admin_profiles_realtime)
+        WebClient->>WebClient: Revalidate session & display Peer Listener Workspace banner
+    end
+```
 
-    Note over WebUser,DB: Web User opens Wellness Dashboard
-    WebUser->>DB: SELECT * FROM mood_entries WHERE user_id = current_user
-    DB-->>WebUser: Returns recent check-ins instantly (Shared state)
+### 3.2 Appointment Booking & Confirmation Flow
+When a student books peer or clinical support:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Student as Student (Web / Android)
+    participant StudentUI as Buddy Connect UI
+    participant DB as Supabase PostgreSQL
+    participant PeerUI as Peer Listener Desk (Web / Android)
+
+    Student->>StudentUI: Select date & 50-minute slot
+    StudentUI->>DB: INSERT INTO book_request (user_id, provider_id, status='pending', notes)
+    StudentUI->>DB: UPDATE student_schedule SET is_booked = true WHERE id = slot_id
+    DB-->>StudentUI: Booking Created
+
+    DB->>PeerUI: Realtime event on 'book_request' (peer_listener_realtime)
+    PeerUI->>PeerUI: New session appears in Client Sessions Queue
+    
+    PeerUI->>DB: UPDATE book_request SET status = 'approved' WHERE id = request_id
+    DB->>StudentUI: Realtime event: Session Approved
+    StudentUI->>StudentUI: Appointment shows "Approved" badge
 ```
 
 ---
 
-## 5. External Integrations
-* **Firebase Cloud Messaging (FCM)**: Stored device tokens in `public.push_tokens` for push alerts triggered via Supabase database webhooks.
-* **Audit Logging**: All administrative changes, status updates, and flagged content are persisted to `public.audit_logs`.
+## 4. Security & Access Control Model
+
+1. **Canonical Identity**: All records reference `auth.users(id)` as the foreign key `user_id`.
+2. **Dual-Field Profile Sync**: A PostgreSQL trigger `sync_profile_dual_fields()` maintains parity between Web and Mobile profile column conventions on every INSERT or UPDATE.
+3. **Role Normalization**:
+   - `STUDENT`: Self-care, private journal, anonymous wall, appointment requests.
+   - `PEER` / `PEER_LISTENER`: Manages availability on `student_schedule`, reviews client requests on `book_request`.
+   - `EXPERT`: Manages clinical appointments, updates status, broadcasts alerts on `notifications`.
+   - `ADMIN` / `SUPER_ADMIN`: Comprehensive user management, role assignments, community moderation, and platform metrics.
+4. **No Service-Role Exposure**: The client application only communicates with Supabase via the public anonymous key (`NEXT_PUBLIC_SUPABASE_ANON_KEY`) subject to PostgreSQL Row Level Security (RLS).

@@ -19,6 +19,8 @@ import {
   Check,
   X,
   ExternalLink,
+  MessageSquare,
+  UserCheck,
 } from "lucide-react";
 import { AppShell } from "@/components/site-shell";
 import {
@@ -36,12 +38,15 @@ import { EventItem } from "@/lib/data/events";
 import { ResourceItem } from "@/lib/data/resources";
 import { getTeamMembers, DetailedTeamMember } from "@/lib/data/team";
 import { useEvents, useInitiatives, useResources } from "@/lib/hooks/useData";
+import { AdminUserManagement } from "@/components/admin/admin-user-management";
+import { AdminCommunityManagement } from "@/components/admin/admin-community-management";
 
-type AdminTab = "dashboard" | "initiatives" | "events" | "resources" | "team" | "inbox" | "audit";
+type AdminTab = "dashboard" | "users" | "community" | "initiatives" | "events" | "resources" | "team" | "inbox" | "audit";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [metrics, setMetrics] = useState<AdminDashboardMetrics | null>(null);
+  const [userStats, setUserStats] = useState<{ total: number; students: number; peers: number; experts: number; admins: number } | null>(null);
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [team, setTeam] = useState<DetailedTeamMember[]>([]);
@@ -73,11 +78,13 @@ export default function AdminPage() {
 
   const tabs: { id: AdminTab; label: string; icon: typeof BarChart3; count?: number }[] = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+    { id: "users", label: "User Directory & Roles", icon: Users, count: userStats?.total },
+    { id: "community", label: "Campus Reflections", icon: MessageSquare },
     { id: "inbox", label: "Inquiries & Submissions", icon: Inbox, count: metrics?.newContactSubmissionsCount },
     { id: "initiatives", label: "Initiatives", icon: Sparkles, count: metrics?.totalInitiatives },
     { id: "events", label: "Events & Workshops", icon: Calendar, count: metrics?.upcomingEvents },
     { id: "resources", label: "Resource Library", icon: BookOpen, count: metrics?.totalResources },
-    { id: "team", label: "Team Members", icon: Users, count: metrics?.teamMembersCount },
+    { id: "team", label: "Team Members", icon: UserCheck, count: metrics?.teamMembersCount },
     { id: "audit", label: "Audit Log", icon: History },
   ];
 
@@ -275,7 +282,17 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 2: INBOX / CONTACT SUBMISSIONS */}
+        {/* TAB 2: USER DIRECTORY & ROLE MANAGEMENT (Canonical Supabase Profiles) */}
+        {activeTab === "users" && (
+          <AdminUserManagement onStatsUpdate={setUserStats} />
+        )}
+
+        {/* TAB 3: CAMPUS REFLECTIONS & COMMUNITY MODERATION */}
+        {activeTab === "community" && (
+          <AdminCommunityManagement />
+        )}
+
+        {/* TAB 4: INBOX / CONTACT SUBMISSIONS */}
         {activeTab === "inbox" && (
           <div className="space-y-6">
             <div className="rounded-3xl border border-[var(--calm-border-soft)] bg-white p-6 shadow-xs">

@@ -35,7 +35,7 @@ export async function proxy(request: NextRequest) {
 
   if (isProtectedRoute && !user) {
     const signInUrl = request.nextUrl.clone();
-    signInUrl.pathname = "/auth/sign-in";
+    signInUrl.pathname = "/login";
     signInUrl.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(signInUrl);
   }
@@ -48,13 +48,16 @@ export async function proxy(request: NextRequest) {
       .eq("id", user.id)
       .maybeSingle();
 
-    const normalizedRole = ((profile?.role as string) || (profile?.type as string) || "STUDENT").toUpperCase();
+    const rawRole = ((profile?.role as string) || (profile?.type as string) || "STUDENT").toUpperCase();
+    const isAdmin = rawRole === "ADMIN" || rawRole === "SUPER_ADMIN";
+    const isExpert = rawRole === "EXPERT";
+    const isPeer = rawRole === "PEER" || rawRole === "PEER_LISTENER";
 
     const isAuthorized =
-      normalizedRole === "SUPER_ADMIN" ||
-      (requiredRole.role === "ADMIN" && (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")) ||
-      (requiredRole.role === "PEER_LISTENER" && (normalizedRole === "PEER_LISTENER" || normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")) ||
-      (requiredRole.role === "EXPERT" && (normalizedRole === "EXPERT" || normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN"));
+      isAdmin ||
+      (requiredRole.role === "ADMIN" && isAdmin) ||
+      (requiredRole.role === "PEER_LISTENER" && (isPeer || isAdmin)) ||
+      (requiredRole.role === "EXPERT" && (isExpert || isAdmin));
 
     if (!isAuthorized) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -67,7 +70,23 @@ export async function proxy(request: NextRequest) {
     request.nextUrl.pathname === "/signup";
 
   if (isAuthPage && user && request.nextUrl.pathname !== "/auth/callback") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("type, role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const rawRole = ((profile?.role as string) || (profile?.type as string) || "STUDENT").toUpperCase();
+    const dest =
+      rawRole === "ADMIN" || rawRole === "SUPER_ADMIN"
+        ? "/admin"
+        : rawRole === "EXPERT"
+        ? "/expert"
+        : rawRole === "PEER" || rawRole === "PEER_LISTENER"
+        ? "/peer-listener"
+        : "/dashboard";
+
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   return response;

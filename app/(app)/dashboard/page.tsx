@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/site-shell";
 import { getCurrentProfile, normalizeUserRole, type ProfileRecord } from "@/lib/auth/profile";
-import { listMoodEntries, type MoodEntry } from "@/lib/data/mood";
+import { listMoodEntries, saveMoodEntry, type MoodEntry } from "@/lib/data/mood";
 
 function MoodPattern({ entries }: { entries: MoodEntry[] }) {
   const width = 620;
@@ -101,14 +101,22 @@ function MoodPattern({ entries }: { entries: MoodEntry[] }) {
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<ProfileRecord | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [moods, setMoods] = useState<MoodEntry[]>([]);
   const [greeting, setGreeting] = useState("Welcome back");
+  const [checkInNotice, setCheckInNotice] = useState<string | null>(null);
+  const [savingMood, setSavingMood] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       try {
         const { profile: currentProfile, user } = await getCurrentProfile();
         setProfile(currentProfile);
+        if (user) {
+          setUserId(user.id);
+          const recentMoods = await listMoodEntries(user.id);
+          setMoods(recentMoods);
+        }
 
         const name = currentProfile?.name || currentProfile?.full_name;
         if (name) {
@@ -118,11 +126,6 @@ export default function DashboardPage() {
         } else if (user?.email) {
           setGreeting(`Welcome, ${user.email.split("@")[0]}`);
         }
-
-        if (user) {
-          const recentMoods = await listMoodEntries(user.id);
-          setMoods(recentMoods);
-        }
       } catch (err) {
         console.warn("Dashboard data load error:", err);
       }
@@ -130,25 +133,128 @@ export default function DashboardPage() {
     loadData();
   }, []);
 
+  async function handleQuickMoodCheckIn(label: string, emoji: string) {
+    if (!userId || savingMood) return;
+    setSavingMood(true);
+    setCheckInNotice(null);
+    try {
+      const saved = await saveMoodEntry(userId, { emoji, label });
+      if (saved) {
+        setMoods((prev) => [...prev, saved]);
+        setCheckInNotice(`Checked in as "${label}" ${emoji} · Saved to your personal wellness record.`);
+        setTimeout(() => setCheckInNotice(null), 4000);
+      }
+    } catch (err) {
+      console.warn("Mood save error:", err);
+    } finally {
+      setSavingMood(false);
+    }
+  }
+
   const role = normalizeUserRole(profile?.role || profile?.type);
+  const rawRole = ((profile?.role as string) || (profile?.type as string) || "STUDENT").toUpperCase();
+  const isPeer = rawRole === "PEER" || rawRole === "PEER_LISTENER";
+  const isExpert = rawRole === "EXPERT";
+  const isAdmin = rawRole === "ADMIN" || rawRole === "SUPER_ADMIN";
 
   return (
     <AppShell role={role}>
       <div className="space-y-8">
+        {/* Privileged Role Banners (Sync with Android peer-screen & expert/admin panels) */}
+        {isPeer && (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-4 shadow-xs animate-fadeIn">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800 text-lg">
+                👥
+              </div>
+              <div>
+                <p className="text-xs font-bold text-emerald-900">Certified Peer Listener Account</p>
+                <p className="text-[11px] text-emerald-700">You are authorized to manage client sessions and listening availability.</p>
+              </div>
+            </div>
+            <Link
+              href="/peer-listener"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-emerald-800 transition shrink-0"
+            >
+              <span>Open Peer Workspace</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        )}
+
+        {isExpert && (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50/90 p-4 shadow-xs animate-fadeIn">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-800 text-lg">
+                🩺
+              </div>
+              <div>
+                <p className="text-xs font-bold text-blue-900">Clinical Expert Account</p>
+                <p className="text-[11px] text-blue-700">Manage clinical consultations, appointment requests, and campus broadcasts.</p>
+              </div>
+            </div>
+            <Link
+              href="/expert"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-blue-800 transition shrink-0"
+            >
+              <span>Open Expert Portal</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        )}
+
+        {isAdmin && (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-purple-200 bg-purple-50/90 p-4 shadow-xs animate-fadeIn">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-800 text-lg">
+                🛡️
+              </div>
+              <div>
+                <p className="text-xs font-bold text-purple-900">Platform Administrator Account</p>
+                <p className="text-[11px] text-purple-700">Access user role management, community moderation, and platform metrics.</p>
+              </div>
+            </div>
+            <Link
+              href="/admin"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-purple-700 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-purple-800 transition shrink-0"
+            >
+              <span>Open Administration</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        )}
+
+        {/* Check-in Confirmation Notice */}
+        {checkInNotice && (
+          <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs sm:text-sm text-emerald-900 shadow-xs animate-fadeIn">
+            <Sparkles className="h-4 w-4 text-emerald-600 shrink-0" />
+            <span>{checkInNotice}</span>
+          </div>
+        )}
+
         <section className="border-b border-[var(--color-border)] pb-8">
           <p className="text-sm text-[var(--color-muted)]">{greeting}.</p>
-          <h2 className="mt-2 max-w-2xl text-4xl leading-tight text-[var(--color-text)] sm:text-5xl">
+          <h2 className="mt-2 max-w-2xl text-4xl leading-tight text-[var(--color-text)] sm:text-5xl font-[family-name:var(--font-display)]">
             How are you feeling today?
           </h2>
           <div className="mt-6 flex flex-wrap gap-3">
-            {["Calm", "Okay", "Low", "Anxious", "Hopeful"].map((mood) => (
-              <Link
-                href="/mood"
-                key={mood}
-                className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] transition hover:border-[var(--color-sage-strong)]"
+            {[
+              { label: "Calm", emoji: "🧘" },
+              { label: "Good", emoji: "✨" },
+              { label: "Okay", emoji: "🌱" },
+              { label: "Low", emoji: "🌧️" },
+              { label: "Overwhelmed", emoji: "🌊" },
+              { label: "Hopeful", emoji: "☀️" },
+            ].map((item) => (
+              <button
+                key={item.label}
+                onClick={() => handleQuickMoodCheckIn(item.label, item.emoji)}
+                disabled={savingMood}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--calm-border-soft)] bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-[var(--color-text-primary)] shadow-xs transition hover:border-[var(--color-brand-primary)] hover:bg-[var(--calm-lavender-pale)]"
               >
-                {mood}
-              </Link>
+                <span>{item.emoji}</span>
+                <span>{item.label}</span>
+              </button>
             ))}
           </div>
         </section>

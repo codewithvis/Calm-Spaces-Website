@@ -147,3 +147,37 @@ All ecosystem clients (Next.js Web Portal, Android / React Native mobile client,
   * **Body (Single)**: `{ "id": "{NOTIFICATION_UUID}" }`
   * **Body (Bulk)**: `{ "all": true }`
   * **Response**: `{ "success": true, "message": "Notification marked as read" }`
+
+---
+
+### 2.8 Admin User Role Management
+* **`PUT /api/v1/admin/users/role`**
+  * **Access**: Super Admin / Admin only
+  * **Body**:
+    ```json
+    {
+      "user_id": "{TARGET_USER_UUID}",
+      "type": "PEER",
+      "role": "PEER_LISTENER"
+    }
+    ```
+  * **Response**: `{ "success": true, "message": "User role updated and synchronized across all platforms" }`
+
+---
+
+### 2.9 Availability Schedules
+* **`GET /api/v1/schedules?type=EXPERT&date=2026-10-28`**
+  * **Access**: Authenticated
+  * **Response**: `{ "success": true, "slots": [ ScheduleSlotObject, ... ] }`
+* **`POST /api/v1/schedules`**
+  * **Access**: Authenticated (Expert or Peer Listener)
+  * **Body**:
+    ```json
+    {
+      "date": "2026-10-28",
+      "start_time": "10:00:00",
+      "end_time": "10:50:00",
+      "mode": "offline"
+    }
+    ```
+  * **Response**: `{ "success": true, "slot": CreatedSlotObject }`

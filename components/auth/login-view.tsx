@@ -30,23 +30,42 @@ export function LoginView() {
     setIsLoading(true);
 
     try {
-      const trimmedEmail = email.trim().toLowerCase();
-      if (!trimmedEmail || !password) {
-        setErrorMessage("Please enter both your email and password.");
+      const trimmedInput = email.trim();
+      if (!trimmedInput || !password) {
+        setErrorMessage("Please enter both your email/registration number and password.");
         setIsLoading(false);
         return;
       }
 
       const supabase = createSupabaseBrowserClient();
+      let resolvedEmail = trimmedInput.toLowerCase();
+
+      // Check if user entered registration number instead of email
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedInput);
+      if (!isEmail) {
+        const { data: profileLookup, error: lookupError } = await supabase
+          .from("profiles")
+          .select("email")
+          .eq("registration_number", trimmedInput)
+          .maybeSingle();
+
+        if (lookupError || !profileLookup?.email) {
+          setErrorMessage("Registration number not found. Please check your credentials or enter your email address.");
+          setIsLoading(false);
+          return;
+        }
+        resolvedEmail = profileLookup.email.toLowerCase();
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: trimmedEmail,
+        email: resolvedEmail,
         password,
       });
 
       if (error) {
         console.warn("[Auth Login] error:", error.message);
         if (error.message.toLowerCase().includes("invalid login credentials")) {
-          setErrorMessage("Incorrect email or password. Please double check your credentials and try again.");
+          setErrorMessage("Incorrect credentials or password. Please double check and try again.");
         } else if (error.message.toLowerCase().includes("email not confirmed")) {
           setErrorMessage("Your email address is not verified yet. Please check your inbox for the confirmation email.");
         } else if (error.message.toLowerCase().includes("rate limit")) {
@@ -59,13 +78,34 @@ export function LoginView() {
       }
 
       if (data?.user) {
-        setSuccessMessage("Signed in successfully! Preparing your calm space...");
+        // Automatic Role Detection from shared profiles table
+        let targetDestination = redirectPath;
+        if (!targetDestination) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("type, role")
+            .eq("id", data.user.id)
+            .maybeSingle();
+
+          const rawRole = ((profile?.role as string) || (profile?.type as string) || "STUDENT").toUpperCase();
+          if (rawRole === "ADMIN" || rawRole === "SUPER_ADMIN") {
+            targetDestination = "/admin";
+          } else if (rawRole === "EXPERT") {
+            targetDestination = "/expert";
+          } else if (rawRole === "PEER" || rawRole === "PEER_LISTENER") {
+            targetDestination = "/peer-listener";
+          } else {
+            targetDestination = "/dashboard";
+          }
+        }
+
+        setSuccessMessage("Signed in successfully! Opening your Calm Space...");
         
-        // Brief moment for pleasant visual feedback before routing
+        // Seamless visual feedback before routing
         setTimeout(() => {
-          router.push(redirectPath || "/dashboard");
+          router.push(targetDestination);
           router.refresh();
-        }, 500);
+        }, 450);
       }
     } catch (err) {
       console.error("[Auth Login] Unexpected exception:", err);
@@ -144,13 +184,13 @@ export function LoginView() {
 
       {/* Login Form */}
       <form onSubmit={handleLogin} className="space-y-5" noValidate>
-        {/* Email Field */}
+        {/* Email or Registration Number Field */}
         <div>
           <label
             htmlFor="login-email"
             className="block text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)] mb-2"
           >
-            Email Address
+            Email Address or Registration Number
           </label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--calm-text-muted)]">
@@ -158,12 +198,12 @@ export function LoginView() {
             </div>
             <input
               id="login-email"
-              type="email"
+              type="text"
               required
-              autoComplete="email"
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. name@sgtuniversity.ac.in"
+              placeholder="e.g. name@sgtuniversity.ac.in or 210101001"
               disabled={isLoading}
               className="w-full rounded-2xl border border-[var(--calm-border-soft)] bg-[var(--calm-white-warm)] pl-10 pr-4 py-3 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--calm-text-muted)]/60 focus:border-[var(--color-brand-primary)] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[var(--calm-lavender-pale)] transition disabled:opacity-60"
             />

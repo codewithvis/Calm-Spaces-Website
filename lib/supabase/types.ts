@@ -168,6 +168,13 @@ export interface BookRequest {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  // Android cross-platform field variants (optional for defensive reads)
+  expert_name?: string | null;
+  student_id?: string | null;
+  expert_id?: string | null;
+  session_date?: string | null;
+  session_time?: string | null;
+  booking_mode?: string | null;
 }
 
 // --------------------------------------------------------------------------

@@ -181,3 +181,15 @@ $$ LANGUAGE plpgsql;
 ### 3.2 Automated Auth User Provisioning (`handle_new_user`)
 Executes `AFTER INSERT` on `auth.users`:
 Extracts user metadata and automatically inserts a linked profile row with fallback names and default role `'STUDENT'`.
+
+---
+
+## 4. Four-Panel Architecture & Realtime Synchronization
+
+| Panel | Primary Tables | Read/Write Scope | Supabase Realtime Channel |
+|---|---|---|---|
+| **Admin Panel** (`/admin`) | `profiles`, `community_post`, `audit_logs`, `initiatives`, `events`, `resources`, `contact_submissions` | Read all profiles, update user roles (`type`, `role`), moderate community wall posts, manage platform CMS | `admin_profiles_realtime`, `admin_community_realtime` |
+| **Expert Panel** (`/expert`) | `book_request`, `expert_schedule`, `notifications`, `profiles` | Manage consultations assigned to expert ID / registration number, create availability slots, broadcast notifications | `expert_workbench_realtime` |
+| **Peer Listener Panel** (`/peer-listener`) | `book_request`, `student_schedule`, `profiles` | Manage client sessions assigned to peer ID / registration number, create 50-minute availability slots | `peer_listener_realtime` |
+| **Student Panel** (`/dashboard`) | `mood_entries`, `journal_entries`, `book_request`, `student_schedule`, `expert_schedule`, `community_post` | Log daily moods, write private journals, book peer and expert support, view personal appointments | `appointments_realtime` |
+
